@@ -41,8 +41,20 @@ function App() {
 
         <main>
           <div>
-            <h1>Get started</h1>
+            <h2>Find the animal shelter near you</h2>
+            <div className="search-bar-container">
+              <input className="search-input" type="text" placeholder="Enter your city" ></input>
+              <button className="search-button">Search</button>
+            </div>
           </div>
+
+          <div className="map-container">
+            <div className="map">
+              <img className="map-image" src="/src/assets/MAP-pic.png" alt="Map"/>
+            </div>
+          </div>
+
+
         </main>
 
         <footer></footer>

@@ -63,10 +63,10 @@ h1 {
   }
 }
 h2 {
-  font-size: 24px;
+  font-size: 36px;
   line-height: 118%;
   letter-spacing: -0.24px;
-  margin: 0 0 8px;
+  margin: 28px 0;
   @media (max-width: 1024px) {
     font-size: 20px;
   }
@@ -392,6 +392,7 @@ li.autorisation a {
 
 main {
     width: 100%;
+    min-width: 250px;
     flex: 1;
     box-sizing: border-box;
     position: relative;
@@ -400,15 +401,69 @@ main {
     margin-bottom: 60px; /* Space for fixed footer */
 }
 
-#map {
+.search-bar-container {
+  width: 28%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  height: 36px;
+  min-width: 250px;
+  font-size: 16px;
+  border: 1px solid var(--text-muted);
+  padding: 0;
+  margin: 0 auto;
+  border-radius: 20px;
+}
+.search-bar-container .search-input {
+  width: 80%;
+  height: 36px;
+  min-width: 174px;
+  font-size: 16px;
+  border: 1px solid var(--text-muted);
+  padding: 0 20px;
+  border-radius: 20px 0 0 20px;
+}
+.search-bar-container .search-button {
+  width: 20%;
+  height: 36px;
+  min-width: 76px;
+  font-size: 16px;
+  border: 1px solid var(--text-muted);
+  padding: 0 auto;
+  border-radius: 0 20px 20px 0;
+  position: sticky;
+  right: 0;
+  cursor: pointer;
+  background: var(--primary-accent);
+  color: black;
+  font-weight: bold;
+}
+
+.map-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--text-muted);
+    margin-top: 400px;
+}
+
+.map {
     width: 100%;
     height: 100%;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: flex-start;
-    padding: 20px;
     box-sizing: border-box;
+}
+
+.map .map-image {
+  padding: 0;
+  max-width: 100%;
 }
 
 #map-view-form {
