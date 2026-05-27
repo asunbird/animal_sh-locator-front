@@ -42,8 +42,8 @@ function App() {
           <ul>
             <li>
               <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
+                <img className="logo" src={petmapLogo} alt="" />
+                Explore petmap
               </a>
             </li>
             <li>
