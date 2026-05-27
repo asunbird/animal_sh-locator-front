@@ -27,6 +27,10 @@
 
 body {
   margin: 0;
+  background-image: url("src/assets/bg/bg-desktop-level0.svg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 #root {
