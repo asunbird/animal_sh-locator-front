@@ -1,11 +1,10 @@
-import { useState } from 'react';
+
 import { Link } from "react-router-dom";
 import logoIcon from '/src/assets/LOGO-icon.svg';
-import mapImage from '/src/assets/MAP-pic.png';
 
 
 function Home () {
-       const [count, setCount] = useState(0)
+       
     return (
         <section id="center">
             <header>
@@ -45,20 +44,6 @@ function Home () {
                     <div className="search-bar-container">
                         <input className="search-input" type="text" placeholder="Enter your city" ></input>
                         <button className="search-button">Search</button>
-                    </div>
-                </div>
-
-                <button
-                    type="button"
-                    className="counter"
-                    onClick={() => setCount((count) => count + 1)}
-                >
-                Count is {count}
-                </button>
-
-                <div className="map-container">
-                    <div className="map">
-                        <img className="map-image" src={mapImage} alt="Map"/>
                     </div>
                 </div>
 
