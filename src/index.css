@@ -8,6 +8,7 @@
   --text-muted: #8C7A73;
   --shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
 
+  /* Font Families */
   /* <weight>: Use a value from 100 to 900 */
   .jost-700 { /* Bold - for UpperCase headings and labels */
     font-family: "Jost", sans-serif;
@@ -16,24 +17,20 @@
     font-style: normal;
     font-size: 24px;
   }
-
   /* <weight>: Use a value from 100 to 900 */
-.libre-franklin-700 { /* Bold - for Regular text */
-  font-family: "Libre Franklin", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 700;
-  font-style: normal;
-}
+  .libre-franklin-700 { /* Bold - for Regular text */
+    font-family: "Libre Franklin", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 700;
+    font-style: normal;
+    font-size: 16px;
+  }
 
-  font: 18px/1.5 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  color: var(--text-main);
-  background: var(--bg-base);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-
 
 }
 
@@ -64,6 +61,16 @@ body {
   place-content: flex-start;
   place-items: center;
 }
+
+.home-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  margin: 10vh auto;
+}
+
 
 /* Ensure Leaflet z-index stays below interactive UI elements like the Drawer */
 .leaflet-container {

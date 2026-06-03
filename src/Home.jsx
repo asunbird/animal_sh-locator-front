@@ -39,11 +39,11 @@ function Home () {
             </header>
 
             <main>
-                <div>
-                    <h2 className="jost-700">Find the animal shelter near you</h2>
+                <div className="home-content">
+                    <h2 className="jost-700">FIND THE ANIMAL SHELTER NEAR YOU</h2>
                     <div className="search-bar-container">
                         <input className="search-input" type="text" placeholder="Enter your city" ></input>
-                        <button className="search-button">Search</button>
+                        <button id="search-button" className="search-button">Search</button>
                     </div>
                 </div>
 
