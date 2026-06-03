@@ -1,14 +1,11 @@
-import { useState } from 'react';
 import { Link } from "react-router-dom";
 import logoIcon from '/src/assets/LOGO-icon.svg';
 
 
-
-function About () {
-    const [count, setCount] = useState(0)
+function SignIn () {
     return (
-        <section id="about">
-             <header>
+        <section id="sign-in">
+            <header>
                <div className="logo">
                     <img className="logo-icon" src={logoIcon} alt="Pet Map Logo" />
                     pet map
@@ -34,19 +31,29 @@ function About () {
                         <Link className="nav-sections" to="/about">About</Link>
                         <Link className="nav-sections" to="/contact">Contact</Link>
                         <Link className="autorisation" to="/signin">Sign in</Link>
-                </nav>
-                
+                </nav>   
  
             </header>
 
             <main>
-                        
-            
-                <button type="button" className="counter" onClick={() => setCount((count) => count + 1)} >
-                    Count is {count}
-                </button>
-            
-                <div>About us</div>
+                    
+                <div>Sign in</div>
+                <form id="sign-in-form" action="" method="">
+                    <input type="text" placeholder="Username" />
+                    <input type="password" placeholder="Password" />
+                    <button type="submit">Submit</button>
+
+                    <div>Don't Remember Your Password?</div>
+                    <input type="email" placeholder="Email Address" />
+                    <button type="button">Reset Password</button>
+                </form>
+
+                <div>Or Create an Account</div>
+                <form id="create-account-form" action="" method="">
+                    <input type="text" placeholder="Username" />
+                    <input type="password" placeholder="Password" />
+                    <button type="submit">Create</button>
+                </form>
             
             </main>
             
@@ -56,4 +63,4 @@ function About () {
     )
 }
 
-export default About
+export default SignIn
