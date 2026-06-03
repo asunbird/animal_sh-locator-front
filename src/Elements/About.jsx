@@ -1,6 +1,6 @@
 
 import { Link } from "react-router-dom";
-import logoIcon from '/src/assets/LOGO-icon.svg';
+import logoIcon from '/src/assets/Logo-PetMap.svg';
 
 
 
