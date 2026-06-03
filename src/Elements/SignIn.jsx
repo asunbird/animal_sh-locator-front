@@ -6,9 +6,8 @@ function SignIn () {
     return (
         <section id="sign-in">
             <header>
-               <div className="logo">
+                <div>
                     <img className="logo-icon" src={logoIcon} alt="Pet Map Logo" />
-                    pet map
                 </div>
 
                 <div className="level-badge">

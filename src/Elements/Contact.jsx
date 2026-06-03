@@ -7,9 +7,8 @@ function Contact () {
         <section id="contact">
 
             <header>
-               <div className="logo">
+                <div>
                     <img className="logo-icon" src={logoIcon} alt="Pet Map Logo" />
-                    pet map
                 </div>
 
                 <div className="level-badge">
@@ -47,7 +46,7 @@ function Contact () {
                     GitHub
                 </a>
             </footer>
-            
+
         </section>
     )
 }

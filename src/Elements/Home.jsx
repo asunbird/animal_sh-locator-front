@@ -58,7 +58,7 @@ function Home () {
     return (
         <section id="home">
             <header>
-               <div>
+                <div>
                     <img className="logo-icon" src={logoIcon} alt="Pet Map Logo" />
                 </div>
 
@@ -134,7 +134,7 @@ function Home () {
                     GitHub
                 </a>
             </footer>
-            
+
         </section>
     );
 }
