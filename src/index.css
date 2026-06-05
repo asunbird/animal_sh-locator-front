@@ -73,12 +73,58 @@ p {
   display: inline-block;
   margin: 0;
 }
+span {
+  display: block;
+  height: inherit; 
+  margin-top: 8px;
+}
+.float-right { float: right; }
+.float-left { float: left; }
+.flex-row {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+}
+.flex-column {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
 button { text-decoration: none; }
 .icon {
   width: 20px;
   height: auto;
   margin: 4px;
   box-sizing: border-box;
+}
+.icon-text {
+  z-index: 1;
+  box-sizing: border-box;
+  font-size: 12px;
+  margin-top: 8px;
+}
+.round-container {
+  z-index: 1;
+  height: 36px;
+  min-width: 90px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  border: 1px solid rgba(0, 0, 0, 1);
+  border-radius: 32px;
+  background: rgba(255, 255, 255, 1);
+}
+.round-swith-btn{
+  z-index: 10;
+  height: 36px;
+  min-width: 36px;
+  border: 1px solid rgba(0, 0, 0, 1);
+  border-radius: 32px;
+  background: rgba(205, 230, 224, 1);
+  margin: 0;
+  padding: 0 8px;
+  text-align: center;
 }
 
 /* -------------------------------- */
@@ -318,7 +364,17 @@ main {
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
-  gap: 20px;
+}
+#favorites {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  justify-content: center;
+  background-image: url("src/assets/icons/Heart-icon.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  margin: 0 4px;
 }
 
 .search-bar-container {

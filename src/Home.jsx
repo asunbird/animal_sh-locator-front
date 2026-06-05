@@ -4,6 +4,7 @@ import logoIcon from '/src/assets/Logo-PetMap.svg';
 import gitHub from '/src/assets/GitHub.png';
 import homeIcon from '/src/assets/icons/Home-icon.svg';
 
+
 // Home component with header, main content, and footer
 export function Home() {
     const navigate = useNavigate();
@@ -85,7 +86,6 @@ export function Map() {
                         <p className="nav-sections">Home</p>
                     </Link>
                 </div>
-                Map Search
             </div>  
 
             <div className="search-bar-container">
@@ -97,7 +97,19 @@ export function Map() {
                     >
                     Search
                 </button>
-            </div>     
+            </div> 
+            <div className="flex-row">
+                <span id="map-switcher-map" className="libre-franklin-700 float-right">MAP</span>
+                <div className="round-container">
+                    <div id="map-switcher" className="round-swith-btn float-right"></div>
+                </div>
+                <span id="map-switcher-list" className="libre-franklin-700 float-right">LIST</span>
+            </div> 
+
+            <div className="map-navigation">
+                <div id="favorites"><p id="favorites-count" className="icon-text libre-franklin-700">0</p></div>
+                <p className="libre-franklin-700">Favorites</p>
+            </div>   
         </section>
     )
 }
