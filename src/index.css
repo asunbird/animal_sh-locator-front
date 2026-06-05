@@ -70,28 +70,16 @@ h2 {
   }
 }
 p {
+  display: inline-block;
   margin: 0;
 }
-
 button { text-decoration: none; }
-
-
-
-/* Linked Elements Styles */
-#about, #contact, #sign-in, #map-search {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 20px;
-    padding: 40px 20px;
-    width: 60%;
-    margin: 20px auto;
-    border-radius: 20px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    background: rgba(255, 255, 255, 0.6);
+.icon {
+  width: 20px;
+  height: auto;
+  margin: 4px;
+  box-sizing: border-box;
 }
-
 
 /* -------------------------------- */
 /* header Styles */
@@ -242,10 +230,6 @@ header {
   text-shadow: 1px 1px 2px var(--clr-accent-shadow);
 }
 
-
-/* Level Specific Styles */
-
-
 /* -------------------------------- */
 /* Home Page Styles */
 #home {
@@ -275,29 +259,68 @@ main {
     margin-bottom: 60px; /* Space for fixed footer */
 }
 
+
+/* Linked Elements Styles */
+#about, #contact, #sign-in {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding: 40px 20px;
+    width: 60%;
+    margin: 20px auto;
+    border-radius: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.6);
+}
+.home-btn {
+  box-sizing: border-box;
+  width: fit-content;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  padding: 4px;
+  border: 1px solid #666;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+}
 /* ... Map Search Styles ... */
 /* Map Element */
-#map-container { 
+#map-search {
     width: 100%;
+    height: 100vh;
     min-height: 450px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding: 40px 20px;
     margin: 0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.8);
+    background-image: url("src/assets/Map-pic.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    border: 1px solid #666;
 }
 
-#map-container .leaflet-container {
-    width: 100%;
-    height: 450px;
-    border-radius: 20px;
-}
 /* Ensure Leaflet z-index stays below interactive UI elements like the Drawer */
 .leaflet-container {
   z-index: 1;
+  box-sizing: border-box;
+}
+.map-navigation {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
-  align-items: flex-start;
-  box-sizing: border-box;
-
+  justify-content: flex-start;
+  align-items: center;
+  gap: 20px;
 }
+
 .search-bar-container {
   width: 28%;
   display: flex;

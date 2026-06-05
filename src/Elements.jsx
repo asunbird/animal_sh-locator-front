@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import {useLocation} from "react-router-dom";
+import homeIcon from '/src/assets/icons/Home-icon.svg';
 import { Outlet } from "react-router-dom";
 // Outlet is for shouwing nested pages data. If we clicj Info or Address, the Outlet will display data from them.
 
@@ -19,7 +20,10 @@ export function About() {
             <Link to="address">Address</Link><br/>
             <Outlet/>
             <div>
-                <Link className="nav-sections" to="/">Home</Link>
+                <Link className="home-btn" to="/">
+                    <img className="icon" src={homeIcon} alt="Home" />
+                    <p className="nav-sections">Home</p>
+                </Link>
             </div>
         </section>
     )
@@ -32,7 +36,10 @@ export function Contact() {
             <div>Contact Support</div>
             <p>My Current URL Location is {currentLocation.pathname}</p><br/>
             <div>
-                <Link className="nav-sections" to="/">Home</Link>
+                <Link className="home-btn" to="/">
+                    <img className="icon" src={homeIcon} alt="Home" />
+                    <p className="nav-sections">Home</p>
+                </Link>
             </div>
 
         </section>

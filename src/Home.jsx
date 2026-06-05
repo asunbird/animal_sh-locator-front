@@ -2,6 +2,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import logoIcon from '/src/assets/Logo-PetMap.svg';
 import gitHub from '/src/assets/GitHub.png';
+import homeIcon from '/src/assets/icons/Home-icon.svg';
 
 // Home component with header, main content, and footer
 export function Home() {
@@ -76,13 +77,27 @@ export function Map() {
 
 
       return (
-        <section id="map-search">
-            <div>Map Search</div>
+        <section id="map-search" className="leaflet-container"> 
+            <div className="map-navigation">
+                <div>
+                    <Link className="home-btn" to="/">
+                        <img className="icon" src={homeIcon} alt="Home" />
+                        <p className="nav-sections">Home</p>
+                    </Link>
+                </div>
+                Map Search
+            </div>  
 
-            <div>
-                <Link className="nav-sections" to="/">Home</Link>
-            </div>
-
+            <div className="search-bar-container">
+                <input id="location-input" className="search-input" type="text"
+                    placeholder="Enter your city" name="search" required 
+                />
+                <button 
+                    id="search-btn" className="search-button" type="button" 
+                    >
+                    Search
+                </button>
+            </div>     
         </section>
     )
 }
