@@ -2,11 +2,11 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { 
   Home, 
-  SignIn, 
   Map 
 } from './Home.jsx';
 import { About, Contact, Info, Address } from './Elements.jsx';
 import Error from  './Error.jsx';
+import SignIn from  './SignIn.jsx';
 import EvolvingBackground from './EvolvingBackground.jsx';
 import './App.css';
 
@@ -18,8 +18,6 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/signin" element={<SignIn />} />
             <Route path="/map" element={<Map />} />
-
-
             <Route path="/about" element={<About />} >
                 <Route path="/about/info" element={<Info />} />
                 <Route path="/about/address" element={<Address />} />

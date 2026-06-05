@@ -1,11 +1,15 @@
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logoIcon from '/src/assets/Logo-PetMap.svg';
-import { Outlet } from "react-router-dom";
-// Outlet is for shouwing nested pages data. If we clicj Info or Address, the Outlet will display data from them.
 
 // Home component with header, main content, and footer
 export function Home() {
+    const navigate = useNavigate();
+
+    const handleClick = (e) => {
+        e.preventDefault();
+        navigate("/signin");
+    };
 
     return (
         <section id="home">
@@ -33,8 +37,9 @@ export function Home() {
                 <nav className="nav-links jost-700">  
                     <Link className="nav-sections" to="/about">About</Link>
                     <Link className="nav-sections" to="/contact">Contact</Link>
-                    <Link className="autorisation" to="signin">Sign in</Link>
-                    <Outlet/>
+                    <Link className="autorisation" onClick={handleClick}>
+                        Sign in
+                    </Link>
                 </nav>
             </header>
             <main>
@@ -72,30 +77,7 @@ export function Home() {
     );
 }
 
-export function SignIn() {
-    return (
-        <section id="sign-in">
-            <div>Sign in</div>
-            <form id="sign-in-form" action="" method="">
-                <input type="text" placeholder="Username" />
-                <input type="password" placeholder="Password" />
-                <button type="submit">Submit</button>
-                <div>Don't Remember Your Password?</div>
-                <input type="email" placeholder="Email Address" />
-                <button type="button">Reset Password</button>
-            </form>
-            <div>Or Create an Account</div>
-            <form id="create-account-form" action="" method="">
-                <input type="text" placeholder="Username" />
-                <input type="password" placeholder="Password" />
-                <button type="submit">Create</button>
-            </form>
-            <div>
-                <Link className="nav-sections" to="/">Home</Link>
-            </div>
-        </section>
-    )
-}
+
 
 export function Map() {
 
