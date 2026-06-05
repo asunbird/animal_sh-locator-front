@@ -1,16 +1,9 @@
 
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import logoIcon from '/src/assets/Logo-PetMap.svg';
 
 // Home component with header, main content, and footer
 export function Home() {
-    const navigate = useNavigate();
-
-    const handleClick = (e) => {
-        e.preventDefault();
-        navigate("/signin");
-    };
-
     return (
         <section id="home">
             <header>
@@ -37,7 +30,7 @@ export function Home() {
                 <nav className="nav-links jost-700">  
                     <Link className="nav-sections" to="/about">About</Link>
                     <Link className="nav-sections" to="/contact">Contact</Link>
-                    <Link className="autorisation" onClick={handleClick}>
+                    <Link className="autorisation" to="/signin">
                         Sign in
                     </Link>
                 </nav>
