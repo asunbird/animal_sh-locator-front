@@ -98,7 +98,7 @@ export function Map() {
                     Search
                 </button>
             </div> 
-            <div className="flex-row">
+            <div className="flex-row margin-h-20">
                 <span id="map-switcher-map" className="libre-franklin-700 float-right">MAP</span>
                 <div className="round-container">
                     <div id="map-switcher" className="round-swith-btn float-right"></div>
