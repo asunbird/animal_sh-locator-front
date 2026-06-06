@@ -5,7 +5,7 @@ function FavoritesList() {
 
     return (
         <section id="favorites-list">
-            <h2>Favorites List</h2>
+            <h2 className="jost-700">Favorites List</h2>
             
             <div className="fav-list-card">Contacts card</div>
             <div className="fav-list-card">Contacts card</div>
