@@ -8,7 +8,7 @@ import { About, Info, Contact } from './Elements.jsx';
 import Error from  './Error.jsx';
 import SignIn from  './SignIn.jsx';
 import EvolvingBackground from './EvolvingBackground.jsx';
-import './App.css';
+
 
 function App() {
   return (
