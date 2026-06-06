@@ -1,0 +1,86 @@
+
+import { Link, useNavigate } from "react-router-dom";
+// Import icons
+import logoIcon from '/src/assets/Logo-PetMap.svg';
+import gitHub from '/src/assets/GitHub.png';
+import homeIcon from '/src/assets/icons/Home-icon.svg';
+
+import Map from './Home.jsx';
+
+
+// USER Profile-Home component with header, main content, and footer
+function ProfileHome() {
+    const navigate = useNavigate();
+    return (
+        <section id="profile-home">
+            <header>
+                <div>
+                    <img className="logo-icon" src={logoIcon} alt="Pet Map Logo" />
+                </div>  
+                <div className="level-badge">
+                    <span>Level 1</span>
+                    <div className="level-progress-bar">
+                        <div className="progress-fill" style={{ width: '50%' }}></div>
+                    </div>
+                </div>
+                <div className="lang-switch-container">
+                    <div id="lang-ES-btn" className=" jost-700">ES</div>
+                    <div className="lang-toggle-btn">
+                        <div className="lang-toggle-point"></div>
+                    </div>
+                    <div id="lang-EN-btn" className=" jost-700">EN</div>
+                </div>
+
+                <div>
+                    <Link className="home-btn" to="/">
+                        <img className="icon" src={homeIcon} alt="Home" />
+                        <p className="nav-sections">Home</p>
+                    </Link>
+                </div>
+
+                <nav className="nav-links jost-700"> 
+                    <Link className="autorisation" to="/signin">
+                        Sign in
+                    </Link>
+                    <Link className="nav-sections" to="/about">About</Link>
+                </nav>
+                <div className="fav-container flex-row">
+                    <div id="favorites">
+                        <p id="favorites-count" className="icon-text libre-franklin-700">0</p>
+                    </div>
+                    <p className="libre-franklin-700">Favorites</p>
+                </div> 
+            </header>
+            <main>
+                <div className="home-content">
+                    <h2 className="jost-700">FIND THE ANIMAL SHELTER NEAR YOU</h2>
+                    <div className="search-bar-container">
+                        <input
+                            id="location-input"
+                            className="search-input"
+                            type="text"
+                            placeholder="Enter your city" 
+                            name="search"
+                            required
+                        />
+                        <button onClick={()=> navigate("./map")} id="search-btn" 
+                            className="search-button" type="button" >
+                            Search
+                        </button>
+                    </div>
+                </div>
+            </main>
+            <footer className="libre-franklin-700">
+                © 2026 Pet Map |
+                <img className="github" src={gitHub} alt="GitHub" />
+                <a href="https://github.com/asunbird/Animal-shelters-Locator-Frontend" target="_blank" >
+                    GitHub
+                </a>
+            </footer>
+        </section>
+    );
+}
+
+
+export default ProfileHome;
+

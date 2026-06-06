@@ -8,6 +8,8 @@ import { About, Info, Contact } from './Elements.jsx';
 import Error from  './Error.jsx';
 import SignIn from  './SignIn.jsx';
 import EvolvingBackground from './EvolvingBackground.jsx';
+import Favorites from './Favorites.jsx'
+import ProfileHome from './ProfileHome.jsx'
 
 
 function App() {
@@ -16,7 +18,10 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/signin" element={<SignIn />} />
+            <Route path="/signin" element={<SignIn />} >
+              <Route path="/signin/profilehome" element={<ProfileHome />} />
+            </Route>
+            <Route path="/favorites" element={<Favorites />} />
             <Route path="/map" element={<Map />} />
             <Route path="/about" element={<About />} >
                 <Route path="/about/info" element={<Info />} />

@@ -22,11 +22,11 @@ export function Home() {
                     </div>
                 </div>
                 <div className="lang-switch-container">
-                    <div className="lang-ES-btn jost-700">ES</div>
+                    <div id="lang-ES-btn" className=" jost-700">ES</div>
                     <div className="lang-toggle-btn">
                         <div className="lang-toggle-point"></div>
                     </div>
-                    <div className="lang-EN-btn jost-700">EN</div>
+                    <div id="lang-EN-btn" className=" jost-700">EN</div>
                 </div>
                 <nav className="nav-links jost-700"> 
                     <Link className="autorisation" to="/signin">
@@ -38,7 +38,7 @@ export function Home() {
                     <div id="favorites">
                         <p id="favorites-count" className="icon-text libre-franklin-700">0</p>
                     </div>
-                    <p className="libre-franklin-700">Favorites</p>
+                    <Link className="nav-sections libre-franklin-700" to="/favorites">Favorites</Link>
                 </div> 
             </header>
             <main>
