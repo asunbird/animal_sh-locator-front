@@ -499,6 +499,10 @@ form .user-contacts {
     margin: 0;
    
 }
+#leaflet-map {
+  height: 100vh;
+  width: 100%;
+}
 #map-main-content {
   padding: 0;
   width: 100%;
@@ -506,7 +510,7 @@ form .user-contacts {
   margin: 0;
   z-index: 1; /* Ensure Leaflet z-index stays below interactive UI elements like the Drawer */
   box-sizing: border-box;
-}
+  }
 #map-navigation {
   width: 100%;
   z-index: 3; /* z-index for Map navigation interactive UI elements to stay above the map */
