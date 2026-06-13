@@ -42,6 +42,13 @@ function Map() {
     useEffect(() => {
         localStorage.setItem('paws_favorites', JSON.stringify(favorites));
     }, [favorites]);
+
+    // Ensure map flies to search location if map wasn't ready during initial search
+    useEffect(() => {
+        if (map && hasSearched) {
+            map.flyTo(initialMapCenter, 13);
+        }
+    }, [map, hasSearched, initialMapCenter]);
   
     const toggleFavorite = (shelter) => {
         setFavorites(prev => {
@@ -59,14 +66,15 @@ function Map() {
     const goToShelter = (shelter) => {
         const lat = shelter.lat || (shelter.center && shelter.center.lat);
         const lon = shelter.lon || (shelter.center && shelter.center.lon);
+        let centerArr = [lat, lon];
         if (lat && lon) {
-            setInitialMapCenter([lat, lon]);
+            setInitialMapCenter(centerArr);
             setHasSearched(true);
             setViewMode('map');
             // We set a small timeout to ensure the map re-renders if key changes or center updates
             setTimeout(() => {
                 if (map) {
-                    map.flyTo([lat, lon], 15);
+                    map.flyTo(centerArr, 13);
                 }
             }, 100);
         }
@@ -146,7 +154,7 @@ function Map() {
         const mirrors = [
             '/api/overpass'
         ];
-
+        
         let lastError = null;
 
         for (const url of mirrors) {
@@ -154,7 +162,7 @@ function Map() {
             if (lastError) await new Promise(resolve => setTimeout(resolve, 500));
       
                 try {
-                    const radius = 30000; // 30km
+                    const radius = 50000; // 50km
                     const overpassQuery = `
                         [out:json][timeout:25];
                         (
@@ -163,8 +171,9 @@ function Map() {
                             nwr["tourism"="animal_breeding"](around:${radius},${lat},${lon});
                             nwr["office"="association"](around:${radius},${lat},${lon});
                             nwr["amenity"="veterinary"](around:${radius},${lat},${lon});
+                            nwr["animal_shelter"](around:${radius},${lat},${lon});
                         );
-                        out center;
+                        out center tags;
                     `;
         
                     const response = await fetch(url, {
@@ -175,13 +184,15 @@ function Map() {
                         },
                         body: `data=${encodeURIComponent(overpassQuery)}`
                     });
-
-                    if (!response.ok) {
+                      if (!response.ok) {
                         throw new Error(`Status ${response.status}`);
-                    }
+                      }
 
-                    const data = await response.json();
-                    const elements = data.elements || [];
+                      const data = await response.json();
+                      // Log full response and element count for every request
+                      console.log(data);
+                      console.log((data.elements || []).length);
+                      const elements = data.elements || [];
                
                     if (elements.length === 0) {
                         console.warn(`No shelters found near ${lat}, ${lon} within 30km`);
@@ -264,7 +275,7 @@ function Map() {
                 </div> 
             </header>
             <main id="map-main-content">
-                <MapContainer id="leaflet-map" center={initialMapCenter} zoom={15} zoomControl={false} ref={setMap} >
+                <MapContainer id="leaflet-map" center={initialMapCenter} zoom={13} zoomControl={false} ref={setMap} >
                        <TileLayer
                   url={`https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png?api_key=${import.meta.env.VITE_STADIA_MAPS_KEY || ''}`}
                   attribution='&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
