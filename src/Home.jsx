@@ -24,7 +24,6 @@ function Home() {
                         <div className="progress-fill" style={{ width: '50%' }}></div>
                     </div>
                 </div>
-
                 {/* Language Switcher ES-EN */}
                 <div id="lang" className="lang-switch-container">
                     <div id="lang-ES-btn" className="jost-700">ES</div>
@@ -40,6 +39,8 @@ function Home() {
                         Sign in
                     </Link>
                 </nav>
+
+                {/* Favorites buton */}
                 <div className="fav-container flex-row">
                     <div id="favorites">
                         <p id="favorites-count" className="icon-text libre-franklin-700">0</p>
