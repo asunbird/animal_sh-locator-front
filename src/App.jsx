@@ -1,9 +1,8 @@
 
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { 
-  Home, 
-  Map 
-} from './Home.jsx';
+import Home from './Home.jsx';
+import Map from './Map.jsx';
+
 import { About, Info, Contact } from './Elements.jsx';
 import Error from  './Error.jsx';
 import SignIn from  './SignIn.jsx';
