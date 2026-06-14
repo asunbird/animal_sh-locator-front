@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import logoIcon from '/src/assets/Logo-PetMap.svg'; // Import icons
 
 // Import the Map Container for Leaflet
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
+import { MapContainer, TileLayer, Marker, Popup, ZoomControl } from 'react-leaflet'
 import ShelterCard from './PoiContacts.jsx';
 
 import { useSaveFavorites } from './hooks/saveFavorites';
@@ -231,14 +231,25 @@ function Map() {
                         </p>
                     </Link>
                 </div> 
-
+                
+                {/* ZOOM Controls */}
                 <div className="round-container-vert">
-                    <div id="map-switcher-zoom-plus" className="round-swith-btn">
+                    <button 
+                        id="map-switcher-zoom-plus" 
+                        className="round-switch-btn"
+                        onClick={handleZoomIn}
+                        title="Zoom in"
+                    >
                         <p className="jost-700">+</p>
-                    </div>
-                    <div id="map-switcher-zoom-minus" className="round-swith-btn">
+                    </button>
+                    <button 
+                        id="map-switcher-zoom-minus" 
+                        className="round-switch-btn flip-vertical"
+                        onClick={handleZoomOut}
+                        title="Zoom out"
+                    >
                         <p className="jost-700">-</p>
-                    </div>
+                    </button>
                 </div> 
             </header>
             
@@ -248,6 +259,7 @@ function Map() {
                   url={`https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png?api_key=${import.meta.env.VITE_STADIA_MAPS_KEY || ''}`}
                   attribution='&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
                 />
+                  
                    
 
                  {/* Render overpass markers */}

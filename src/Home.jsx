@@ -53,11 +53,11 @@ function Home() {
 
                 {/* Favorites buton */}
                 <div className="fav-container flex-row">
-                    <Link className="nav-sections" to="/favorites" id="favorites" style={{ textDecoration: 'none' }}> 
+                    <Link className="nav-sections" to="/favorites" id="favorites" style={{ textDecoration: 'none' }} > 
                         <div id="favorites-btn" >
                             <p id="favorites-count" className="icon-text libre-franklin-700">{favorites.length}</p>
                         </div>
-                        <p className="libre-franklin-700">
+                        <p className="libre-franklin-700" >
                             Favorites
                         </p>
                     </Link>
