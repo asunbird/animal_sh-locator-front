@@ -45,6 +45,9 @@
 .bg-cyan-blue {
   background-color: var(--bg-cyan-blue);
 }
+.bg-base {
+  background: var(--bg-base);
+}
 .text-black { color: var(--black); }
 .text-white { color: var(--white); }
 
@@ -109,7 +112,7 @@ span {
 .margin-h-20 {
   margin: 0 20px;
 }
-button { text-decoration: none; }
+button { text-decoration: none; cursor: pointer;}
 .icon {
   width: 20px;
   height: auto;
@@ -131,7 +134,6 @@ button { text-decoration: none; }
   align-items: center;
   border: 1px solid rgba(0, 0, 0, 1);
   border-radius: 32px;
-  background: rgba(255, 255, 255, 1);
 }
 .round-container-vert {
   z-index: 1;
@@ -147,7 +149,7 @@ button { text-decoration: none; }
 }
 .round-switch-btn{
   z-index: 10;
-  height: 43px;
+  height: 45px;
   width: 36px;
   border: 1px solid rgba(0, 0, 0, 1);
   border-radius: 32px 32px 0 0;

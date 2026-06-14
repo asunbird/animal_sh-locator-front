@@ -71,6 +71,24 @@ function Map() {
         if (map) map.zoomOut();
     };
 
+    // Search for shelters in the current visible map area
+    const searchInArea = () => {
+        if (!map) {
+            alert("Map is not ready. Please wait a moment and try again.");
+            return;
+        }
+
+        const center = map.getCenter();
+        const lat = center.lat;
+        const lon = center.lng;
+
+        if (lat && lon) {
+            fetchShelters(lat, lon);
+        } else {
+            alert("Could not determine map center coordinates.");
+        }
+    };
+
     // Phase 1: Nominatim Geocoding with handleSearch function
     const handleSearch = async (e) => {
         e.preventDefault();
@@ -206,8 +224,8 @@ function Map() {
                         <img className="logo-icon" src={logoIcon} alt="Pet Map Logo" />
                     </Link> 
                 </div> 
-
-                <form id="map-search-bar" className="search-bar-container" onSubmit={handleSearch}>
+                {/* MAP Search bar */}
+                <form id="map-search-bar" className="search-bar-container bg-base" onSubmit={handleSearch}>
                     <input id="location-input" className="search-input"
                         type="text" 
                         placeholder="Search city (e.g. London)" 
@@ -219,6 +237,16 @@ function Map() {
                         {isSearching ? '...' : 'Go'}
                     </button>
                 </form>
+
+                {/* Search in this area Btn */}
+                <div >
+                     <button className="round-container bg-cyan-blue"
+                        onClick={searchInArea}
+                        title="Search in this area"
+                    >
+                        <p className="libre-franklin-700">Search this area</p>
+                    </button>
+                </div>
 
                {/* Favorites buton */}
                 <div className="fav-container flex-row">
