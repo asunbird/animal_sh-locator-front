@@ -5,7 +5,7 @@ import logoIcon from '/src/assets/Logo-PetMap.svg'; // Import icons
 // Import the Map Container for Leaflet
 import { MapContainer, TileLayer } from 'react-leaflet'
 import ShelterCard from './PoiContacts.jsx';
-import ShelterMarkerCard from './functions/ShelterMarkerCard';
+import ShelterMarkerCard from './functions/ShelterMarkerCard.jsx';
 
 import { useSaveFavorites } from './hooks/saveFavorites';
 import { useLocationSearch } from './hooks/useLocationSearch'; // <-- Location search hook
@@ -28,6 +28,8 @@ function Map() {
     const [searchQuery, setSearchQuery] = useState('');
     const [map, setMap] = useState(null); // Assuming save leaflet map instance here
     const [isLoadingShelters, setIsLoadingShelters] = useState(false);
+
+    const [activeShelterId, setActiveShelterId] = useState(null);
 
     const { favorites, toggleFavorite, isFavorite } = useSaveFavorites();
     const [hasSearched, setHasSearched] = useState(false);
@@ -297,6 +299,14 @@ function Map() {
                             icon={DefaultIcon}
                             isFavorite={isFavorite}
                             toggleFavorite={toggleFavorite}
+                            onMarkerClick={(selectedShelter) => {
+                                setActiveShelterId(selectedShelter.id);
+                                // Automatically scroll the list below to the clicked card
+                                const cardElement = document.getElementById(`card-${selectedShelter.id}`);
+                                if (cardElement) {
+                                    cardElement.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                                }
+                            }}
                         />
                     ))}
                 </MapContainer> 
@@ -325,15 +335,22 @@ function Map() {
                     </div>
                     <div className="items-grid">
                         {shelters.map(shelter => (
-                            <ShelterCard 
-                                key={shelter.id} 
-                                shelter={shelter} 
-                                isFavorite={isFavorite(shelter.id)}
-                                onToggleFavorite={toggleFavorite}
-                                onAction={goToShelter}
-                            />
+                            <div key={shelter.id} id={`card-${shelter.id}`} >
+                                <ShelterCard 
+                                    shelter={shelter}
+                                    isFavorite={isFavorite(shelter.id)}
+                                    onToggleFavorite={toggleFavorite}
+                                    isActive={activeShelterId === shelter.id}
+                                    onAction={goToShelter}
+                                    onCardClick={(selectedShelter) => {
+                                        setActiveShelterId(selectedShelter.id);
+                                        goToShelter(selectedShelter); // Pans the map to the pin
+                                    }}
+                                />
+                            </div>
                         ))}
                     </div>
+
                     <div id="map-close" style={{ pointerEvents: 'auto' }}>
                         <button className="map-btn" onClick={() => setHasSearched(false)}>x</button>
                     </div>

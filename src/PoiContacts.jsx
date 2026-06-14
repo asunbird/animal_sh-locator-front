@@ -1,22 +1,39 @@
 // Rendering Contacts card
 
-function ShelterCard({ shelter, onAction, isFavorite, onToggleFavorite }) {
+function ShelterCard({ shelter, onAction, onCardClick, isFavorite, onToggleFavorite, isActive }) {
   const tags = shelter.tags || {};
   const name = tags.name || 'Unknown Shelter';
   const address = [tags['addr:housenumber'], tags['addr:street'], tags['addr:city']].filter(Boolean).join(' ') || 'No address provided';
-  const website = tags['contact:website'] || tags.website;
   const phone = tags['contact:phone'] || tags.phone;
+  const website = tags['contact:website'] || tags.website;
   const email = tags['contact:email'] || tags.email;
   const lat = shelter.lat || (shelter.center && shelter.center.lat);
   const lon = shelter.lon || (shelter.center && shelter.center.lon);
  
+  const handleShare = async (e) => {
+    e.stopPropagation(); // Prevent card click event
+    if (navigator.share) {
+      await navigator.share({ title: name, url: website || window.location.href });
+    }
+  };
 
   return (
-    <div className="shelter-card">
-      <div className="card-header">
-        <div>
-          <h3>{name}</h3>
-        </div>
+    <div 
+      // Add dynamic styling to highlight the card if the map pin is active
+      className={`shelter-card ${isActive ? 'active-highlight' : ''}`}
+      onClick={() => onCardClick(shelter)}
+        style={{ 
+          cursor: 'pointer', 
+          border: isActive ? '2px solid #007AFF' : '1px solid #ddd',
+          boxShadow: isActive ? '0 4px 12px rgba(0,122,255,0.2)' : 'none',
+          transition: 'all 0.2s ease-in-out',
+          padding: '16px',
+          borderRadius: '12px',
+          backgroundColor: '#fff'
+        }}>
+
+      <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+          <h3 style={{ margin: 0, fontSize: '1.2rem', color: '#333' }}>{name}</h3>
         <button 
           className={`heart-btn ${isFavorite ? 'is-fav' : ''}`} 
           onClick={() => onToggleFavorite(shelter)}
@@ -24,10 +41,23 @@ function ShelterCard({ shelter, onAction, isFavorite, onToggleFavorite }) {
           ❤️
       </button>
       </div>
-      <p className="card-address">
-        {address}
-      </p>
+
+      {address && <p style={{ color: '#666', margin: '8px 0', fontSize: '0.9rem' }}>📍 {address}</p>}
       
+      {/* Action Buttons Row */}
+      <div style={{ display: 'flex', gap: '8px', marginTop: '16px', flexWrap: 'wrap' }}>
+        {phone && (
+          <a href={`tel:${phone}`} onClick={(e) => e.stopPropagation()} 
+             style={{ background: '#f0f0f0', padding: '6px 12px', borderRadius: '20px', textDecoration: 'none', color: '#333', fontSize: '0.85rem', fontWeight: '600' }}>
+            📞 Call
+          </a>
+        )}
+        <button onClick={handleShare} 
+                style={{ background: '#f0f0f0', border: 'none', padding: '6px 12px', borderRadius: '20px', color: '#333', fontSize: '0.85rem', fontWeight: '600', cursor: 'pointer' }}>
+          ↗ Share
+        </button>
+      </div>
+
       <div className="card-contacts">
         { website && (
           <div className="contact-item">
@@ -68,17 +98,16 @@ function ShelterCard({ shelter, onAction, isFavorite, onToggleFavorite }) {
             </a>
           </div>
         </div>
-      </div>
-
-
-
       <div className="card-actions">
 
         <button className="view-on-map-btn" onClick={() => onAction(shelter)}>
           View on Map
         </button>
       </div>
+
+      </div>
     </div>
+    
   );
 }
 

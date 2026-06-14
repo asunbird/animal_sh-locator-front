@@ -31,8 +31,11 @@ export const useLocationSearch = (map, setIsLoadingShelters, fetchShelters) => {
                         const lat = parseFloat(data[0].lat);
                         const lon = parseFloat(data[0].lon);
 
-                        map.setView([lat, lon], 13);
-                            fetchShelters(lat, lon); // Instantly triggers the Overpass query!
+                        setTimeout(() => {
+                            map.setView([lat, lon], 13);
+                        }, 100);
+                        
+                        fetchShelters(lat, lon); // Instantly triggers the Overpass query!
                     } else {
                         alert("Location not found on map.");
                         setIsLoadingShelters(false);
