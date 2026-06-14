@@ -1,19 +1,6 @@
+// Rendering Contacts card
 
-import L from 'leaflet';
-import pawIcon from './assets/point.svg';
-import 'leaflet/dist/leaflet.css';
-
-let DefaultIcon = L.icon({
-    iconUrl: pawIcon,
-    iconSize: [32, 32],
-    iconAnchor: [16, 32],
-    popupAnchor: [0, -32]
-});
-L.Marker.prototype.options.icon = DefaultIcon;
-
-
-
-function ShelterCard({ shelter, isFavorite, onToggleFavorite, onAction }) {
+function ShelterCard({ shelter, onAction, isFavorite, onToggleFavorite }) {
   const tags = shelter.tags || {};
   const name = tags.name || 'Unknown Shelter';
   const address = [tags['addr:housenumber'], tags['addr:street'], tags['addr:city']].filter(Boolean).join(' ') || 'No address provided';
@@ -22,28 +9,20 @@ function ShelterCard({ shelter, isFavorite, onToggleFavorite, onAction }) {
   const email = tags['contact:email'] || tags.email;
   const lat = shelter.lat || (shelter.center && shelter.center.lat);
   const lon = shelter.lon || (shelter.center && shelter.center.lon);
-  const typeLabel = (() => {
-    if (tags.amenity === 'animal_shelter') return 'Animal shelter';
-    if (tags.amenity === 'veterinary') return 'Veterinary clinic';
-    if (tags.tourism === 'animal_boarding') return 'Animal boarding';
-    if (tags.tourism === 'animal_breeding') return 'Animal breeding';
-    if (tags.office === 'association') return 'Association office';
-    return tags.amenity || tags.tourism || tags.office || '';
-  })();
+ 
 
   return (
     <div className="shelter-card">
       <div className="card-header">
         <div>
           <h3>{name}</h3>
-          {typeLabel && <p className="card-type" style={{ margin: '4px 0 0', fontSize: '0.9rem', color: '#555' }}>{typeLabel}</p>}
         </div>
         <button 
           className={`heart-btn ${isFavorite ? 'is-fav' : ''}`} 
           onClick={() => onToggleFavorite(shelter)}
         >
           ❤️
-        </button>
+      </button>
       </div>
       <p className="card-address">
         {address}

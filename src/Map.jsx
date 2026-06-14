@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
 // Import icons
@@ -7,11 +6,12 @@ import homeIcon from '/src/assets/icons/Home-icon.svg';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
 import ShelterCard from './PoiContacts.jsx';
 
+import { useSaveFavorites } from './hooks/saveFavorites';
+
 // Fix for default marker icon in leaflet with bundler
 import L from 'leaflet';
 import pawIcon from './assets/point.svg';
 import 'leaflet/dist/leaflet.css';
-
 let DefaultIcon = L.icon({
     iconUrl: pawIcon,
     iconSize: [32, 32],
@@ -20,10 +20,9 @@ let DefaultIcon = L.icon({
 });
 L.Marker.prototype.options.icon = DefaultIcon;
 
-
 // Rendering a Map
 function Map() {
-
+    const { favorites, toggleFavorite, isFavorite } = useSaveFavorites();
     const [hasSearched, setHasSearched] = useState(false);
     const [initialMapCenter, setInitialMapCenter] = useState([40.417840, -3.688085]);
     const [map, setMap] = useState(null);
@@ -32,36 +31,18 @@ function Map() {
   
     const [shelters, setShelters] = useState([]);
     const [isLoadingShelters, setIsLoadingShelters] = useState(false);
+
     const [viewMode, setViewMode] = useState('map'); // 'map' | 'list' | 'favorites'
 
-    const [favorites, setFavorites] = useState(() => {
-        const saved = localStorage.getItem('paws_favorites');
-        return saved ? JSON.parse(saved) : [];
-  });
-
-    useEffect(() => {
-        localStorage.setItem('paws_favorites', JSON.stringify(favorites));
-    }, [favorites]);
-
+ 
     // Ensure map flies to search location if map wasn't ready during initial search
     useEffect(() => {
-        if (map && hasSearched) {
+    if (map && hasSearched) {
             map.flyTo(initialMapCenter, 13);
         }
     }, [map, hasSearched, initialMapCenter]);
   
-    const toggleFavorite = (shelter) => {
-        setFavorites(prev => {
-            const isFav = prev.some(f => f.id === shelter.id);
-            if (isFav) {
-                return prev.filter(f => f.id !== shelter.id);
-            } else {
-                return [...prev, shelter];
-            }
-        });
-    };
 
-    const isFavorite = (shelterId) => favorites.some(f => f.id === shelterId);
 
     const goToShelter = (shelter) => {
         const lat = shelter.lat || (shelter.center && shelter.center.lat);
@@ -71,7 +52,7 @@ function Map() {
             setInitialMapCenter(centerArr);
             setHasSearched(true);
             setViewMode('map');
-            // We set a small timeout to ensure the map re-renders if key changes or center updates
+            // small timeout to ensure the map re-renders if key changes or center updates
             setTimeout(() => {
                 if (map) {
                     map.flyTo(centerArr, 13);
@@ -147,74 +128,68 @@ function Map() {
                 return;
             }
         }
-
         setIsLoadingShelters(true);
 
-        // Use local serverless proxy to avoid CORS (Vercel: /api/overpass)
-        const mirrors = [
-            '/api/overpass'
-        ];
-        
         let lastError = null;
 
-        for (const url of mirrors) {
-            // Small 500ms delay between retries to give the next mirror a clean start
-            if (lastError) await new Promise(resolve => setTimeout(resolve, 500));
+        // Small 500ms delay between retries to give the next mirror a clean start
+        if (lastError) await new Promise(resolve => setTimeout(resolve, 500));
       
-                try {
-                    const radius = 50000; // 50km
-                    const overpassQuery = `
-                        [out:json][timeout:25];
-                        (
-                            nwr["amenity"="animal_shelter"](around:${radius},${lat},${lon});
-                            nwr["tourism"="animal_boarding"](around:${radius},${lat},${lon});
-                            nwr["tourism"="animal_breeding"](around:${radius},${lat},${lon});
-                            nwr["office"="association"](around:${radius},${lat},${lon});
-                            nwr["amenity"="veterinary"](around:${radius},${lat},${lon});
-                            nwr["animal_shelter"](around:${radius},${lat},${lon});
-                        );
-                        out center tags;
-                    `;
-        
-                    const response = await fetch(url, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded',
-                            'Accept': 'application/json'
-                        },
-                        body: `data=${encodeURIComponent(overpassQuery)}`
-                    });
-                      if (!response.ok) {
-                        throw new Error(`Status ${response.status}`);
-                      }
+        try {
+            const radius = 50000; // 50km
+            const overpassQuery = `
+                [out:json][timeout:25];
+                (
+                    nwr["amenity"="animal_shelter"](around:${radius},${lat},${lon});
+                    nwr["tourism"="animal_boarding"](around:${radius},${lat},${lon});
+                    nwr["tourism"="animal_breeding"](around:${radius},${lat},${lon});
+                    nwr["animal_shelter"](around:${radius},${lat},${lon});
+                );
+                out center tags;
+            `;
+            // nwr["amenity"="veterinary"](around:${radius},${lat},${lon});
 
-                      const data = await response.json();
-                      // Log full response and element count for every request
-                      console.log(data);
-                      console.log((data.elements || []).length);
-                      const elements = data.elements || [];
+            const response = await fetch("https://overpass-api.de/api/interpreter", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Accept': 'application/json'
+                },
+                body: `data=${encodeURIComponent(overpassQuery)}`
+            });
+            console.log(response);
+            if (!response.ok) {
+                throw new Error(`Status ${response.status}`);
+            }
+
+            const data = await response.json();
+            // Log full response and element count for every request
+            console.log(data);
+            console.log((data.elements || []).length);
+            const elements = data.elements || [];
                
-                    if (elements.length === 0) {
-                        console.warn(`No shelters found near ${lat}, ${lon} within 30km`);
-                    }
+            if (elements.length === 0) {
+                console.warn(`No shelters found near ${lat}, ${lon} within 30km`);
+            }
 
-                    setShelters(elements);
-                    setIsLoadingShelters(false);
-                    return; 
+            setShelters(elements);
+            console.log("Shelters found:", elements.length);
+            console.log(elements);
 
-                } catch (err) {
-                    console.warn(`Mirror ${url} failed, trying next...:`, err.message);
-                    lastError = err;
-                }
+            setIsLoadingShelters(false);
+            return; 
+
+        } catch (err) {
+            console.warn(`Mirror failed, trying next...:`, err.message);
+            lastError = err;
         }
+ 
 
         setIsLoadingShelters(false);
         if (lastError) {
-            alert("All Overpass servers are currently struggling due to high traffic. Please try again in about 1 minute.");
+           console.log("All Overpass servers are currently struggling due to high traffic. Please try again in about 1 minute.");
         }
     };
-
-
 
     return (
         <section id="map-search">
@@ -230,36 +205,26 @@ function Map() {
                     </div>
                 </div> 
 
-             <form id="map-search-bar" className="search-bar-container" onSubmit={handleSearch}>
-            <input id="location-input" className="search-input"
-              type="text" 
-              placeholder="Search city (e.g. London)" 
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-            <button id="search-btn" className="search-button" 
-                type="submit" disabled={isSearching}>
-              {isSearching ? '...' : 'Go'}
-            </button>
-          </form>
+                <form id="map-search-bar" className="search-bar-container" onSubmit={handleSearch}>
+                    <input id="location-input" className="search-input"
+                        type="text" 
+                        placeholder="Search city (e.g. London)" 
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                    <button id="search-btn" className="search-button" 
+                        type="submit" disabled={isSearching}>
+                        {isSearching ? '...' : 'Go'}
+                    </button>
+                </form>
 
-                <div className="flex-row margin-h-20">
-                    <span id="map-switcher-map" className="libre-franklin-700 float-right">
-                        MAP
-                    </span>
-                    <div className="round-container">
-                        <div id="map-switcher" className="round-swith-btn float-right"></div>
-                    </div>
-                    <span id="map-switcher-list" className="libre-franklin-700 float-right">
-                        LIST
-                    </span>
-                </div> 
+               
                 <div className="fav-container flex-row">
-                    <div id="favorites">
+                    <Link to="/favorites" id="favorites" style={{ textDecoration: 'none' }}> 
                         <p id="favorites-count" className="icon-text libre-franklin-700">
                             {favorites.length}
                         </p>
-                    </div>
+                    </Link>
                     <p className="libre-franklin-700">
                         Favorites
                     </p>
@@ -274,17 +239,14 @@ function Map() {
                     </div>
                 </div> 
             </header>
+            
             <main id="map-main-content">
                 <MapContainer id="leaflet-map" center={initialMapCenter} zoom={13} zoomControl={false} ref={setMap} >
                        <TileLayer
                   url={`https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png?api_key=${import.meta.env.VITE_STADIA_MAPS_KEY || ''}`}
                   attribution='&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
                 />
-                    <Marker position={[51.505, -0.09]}>
-                        <Popup>
-                            A pretty CSS3 popup. <br /> Easily customizable.
-                        </Popup>
-                    </Marker>
+                   
 
                  {/* Render overpass markers */}
                 {shelters.map((shelter) => {
@@ -294,14 +256,7 @@ function Map() {
                   const phone = tags['contact:phone'] || tags.phone;
                   const email = tags['contact:email'] || tags.email;
                   const openingHours = tags.opening_hours;
-                  const typeLabel = (() => {
-                    if (tags.amenity === 'animal_shelter') return 'Animal shelter';
-                    if (tags.amenity === 'veterinary') return 'Veterinary clinic';
-                    if (tags.tourism === 'animal_boarding') return 'Animal boarding';
-                    if (tags.tourism === 'animal_breeding') return 'Animal breeding';
-                    if (tags.office === 'association') return 'Association office';
-                    return tags.amenity || tags.tourism || tags.office || '';
-                  })();
+              
                   
                   // Extract address information if available
                   const street = tags['addr:street'];
@@ -321,17 +276,14 @@ function Map() {
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '8px' }}>
                           <div>
                             <h3 style={{ margin: '0 0 8px 0', color: 'var(--text-main)', fontSize: '1.1rem' }}>{name}</h3>
-                            {typeLabel && (
-                              <p style={{ margin: '0 0 8px 0', color: '#555', fontSize: '0.95rem' }}>{typeLabel}</p>
-                            )}
                           </div>
-                          <button 
-                            className={`heart-btn ${isFavorite(shelter.id) ? 'is-fav' : ''}`}
-                            onClick={() => toggleFavorite(shelter)}
-                            title={isFavorite(shelter.id) ? "Remove from favorites" : "Add to favorites"}
-                          >
-                            ❤️
-                          </button>
+                            <button 
+                                className={`heart-btn ${isFavorite(shelter.id) ? 'is-fav' : ''}`}
+                                onClick={() => toggleFavorite(shelter)}
+                                title={isFavorite(shelter.id) ? "Remove from favorites" : "Add to favorites"}
+                            >
+                              ❤️
+                            </button>
                         </div>
                         {address && (
                           <p style={{ margin: '4px 0', color: '#666', fontSize: '0.9rem' }}>
@@ -353,14 +305,14 @@ function Map() {
                           </p>
                         )}
                         {email && (
-                          <p style={{ margin: '4px 0' }}>
+                          <div style={{ margin: '4px 0' }}>
                             <strong>Email:</strong>{' '}
                             <form action={`mailto:${email}`} method="POST" encType="text/plain" style={{ display: 'inline' }}>
                               <button type="submit" className="email-link-btn">
                                 {email}
                               </button>
                             </form>
-                          </p>
+                          </div>
                         )}
                         {openingHours && (
                           <p style={{ margin: '4px 0' }}>
@@ -417,14 +369,14 @@ function Map() {
                     </button>
                 </div>
                 <div className="items-grid">
-                {shelters.map(shelter => (
-                  <ShelterCard 
-                    key={shelter.id} 
-                    shelter={shelter} 
-                    isFavorite={isFavorite(shelter.id)}
-                    onToggleFavorite={toggleFavorite}
-                    onAction={goToShelter}
-                  />
+                    {shelters.map(shelter => (
+                    <ShelterCard 
+                        key={shelter.id} 
+                        shelter={shelter} 
+                        isFavorite={isFavorite(shelter.id)}
+                        onToggleFavorite={toggleFavorite}
+                        onAction={goToShelter}
+                    />
                 ))}
               </div>
                 <div id="map-close" style={{ pointerEvents: 'auto' }}>

@@ -42,7 +42,7 @@ function Home() {
 
                 {/* Favorites buton */}
                 <div className="fav-container flex-row">
-                    <div id="favorites">
+                    <div id="favorites-btn">
                         <p id="favorites-count" className="icon-text libre-franklin-700">0</p>
                     </div>
                     <Link className="nav-sections libre-franklin-700" to="/favorites">Favorites</Link>
