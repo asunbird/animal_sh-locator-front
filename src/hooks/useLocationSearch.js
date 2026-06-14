@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom'; // <-- user's input Location
 
 /**
  * Custom hook to handle incoming search requests from the Home page
@@ -32,10 +32,7 @@ export const useLocationSearch = (map, setIsLoadingShelters, fetchShelters) => {
                         const lon = parseFloat(data[0].lon);
 
                         map.setView([lat, lon], 13);
-
-                        setTimeout(() => {
-                            fetchShelters();
-                        }, 500); 
+                            fetchShelters(lat, lon); // Instantly triggers the Overpass query!
                     } else {
                         alert("Location not found on map.");
                         setIsLoadingShelters(false);

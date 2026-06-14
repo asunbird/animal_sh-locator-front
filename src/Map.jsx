@@ -1,5 +1,4 @@
-import { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom'; // <-- user's input Location
+import { useState, useEffect, useCallback } from 'react'; // <-- Added useCallback
 import { Link } from "react-router-dom";
 // Import icons
 import homeIcon from '/src/assets/icons/Home-icon.svg';
@@ -8,7 +7,7 @@ import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
 import ShelterCard from './PoiContacts.jsx';
 
 import { useSaveFavorites } from './hooks/saveFavorites';
-import { useLocationSearch } from './hooks/useLocationSearch';
+import { useLocationSearch } from './hooks/useLocationSearch'; // <-- Location search hook
 
 // Fix for default marker icon in leaflet with bundler
 import L from 'leaflet';
@@ -24,28 +23,20 @@ L.Marker.prototype.options.icon = DefaultIcon;
 
 // Rendering a Map
 function Map() {
-
-    // 1. Grab the router location
-    const locationRouter = useLocation();
+    // 1. All state variables
     const [searchQuery, setSearchQuery] = useState('');
+    const [map, setMap] = useState(null); // Assuming save leaflet map instance here
+    const [isLoadingShelters, setIsLoadingShelters] = useState(false);
 
     const { favorites, toggleFavorite, isFavorite } = useSaveFavorites();
     const [hasSearched, setHasSearched] = useState(false);
     const [initialMapCenter, setInitialMapCenter] = useState([40.417840, -3.688085]);
-    const [map, setMap] = useState(null); // Assuming save leaflet map instance here
-    
-    const [isSearching, setIsSearching] = useState(false);
-  
-    const [shelters, setShelters] = useState([]);
-    const [isLoadingShelters, setIsLoadingShelters] = useState(false);
 
+    const [isSearching, setIsSearching] = useState(false);
+    const [shelters, setShelters] = useState([]);
     const [viewMode, setViewMode] = useState('map'); // 'map' | 'list' | 'favorites'
 
-    // 2. Add handle the incoming search from Home
-    useLocationSearch(map, setIsLoadingShelters, fetchShelters);
 
-
- 
     // Ensure map flies to search location if map wasn't ready during initial search
     useEffect(() => {
     if (map && hasSearched) {
@@ -80,7 +71,7 @@ function Map() {
         if (map) map.zoomOut();
     };
 
-    // Phase 1: Nominatim Geocoding
+    // Phase 1: Nominatim Geocoding with handleSearch function
     const handleSearch = async (e) => {
         e.preventDefault();
         if (!searchQuery.trim()) return;
@@ -128,8 +119,8 @@ function Map() {
         }
     };
 
-    // Phase 2: Overpass QL Shelter Fetching
-    const fetchShelters = async (lat, lon) => {
+    // Phase 2: Overpass QL Shelter Fetching with fetchShelters function
+    const fetchShelters = useCallback(async (lat, lon) => {
         if (lat === undefined || lon === undefined) {
             if (map) {
                 const center = map.getCenter();
@@ -200,7 +191,12 @@ function Map() {
         if (lastError) {
            console.log("All Overpass servers are currently struggling due to high traffic. Please try again in about 1 minute.");
         }
-    };
+
+    }, [map]); // <-- Add a dependency array
+
+     // Calling location search hook
+     // Outside of all callbacks, at the main level of the Map component!
+    useLocationSearch(map, setIsLoadingShelters, fetchShelters);
 
     return (
         <section id="map-search">
