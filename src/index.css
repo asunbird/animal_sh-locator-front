@@ -14,8 +14,8 @@
   --black: #000000;
   --white: #FFFFFF;
 
-  /* variables for icons */
-  --home-icon: url('/assets/icons/Home-icon.svg');
+  /* heart icon variable (ensure the path is correct relative to your public or src folder) */
+  --heart-icon: url('/src/assets/icons/Heart-icon.svg');
 
   /* ... Font Families ... */
   /* <weight>: Use a value from 100 to 900 */
@@ -439,6 +439,8 @@ main {
     border-radius: 20px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     background: rgba(255, 255, 255, 0.6);
+    overflow: scroll;
+    padding-bottom: 40px;
 }
 .fav-list-card {
     display: flex;
@@ -561,6 +563,22 @@ form .user-contacts {
     padding: 5px;
 }
 
+#favorites {
+  box-sizing: border-box;
+  width: 190px;
+  max-width: fit-content;
+  height: 40px;
+  max-height: fit-content;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  padding: 8px;
+  border: 1px solid #666;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+}
 .fav-container{
   width: 12%;
   padding: 4px;
@@ -570,7 +588,8 @@ form .user-contacts {
   height: 36px;
   display: flex;
   justify-content: center;
-  background-image: var(--home-icon);
+  /*  --heart-icon for favorites button */
+  background-image: var(--heart-icon);
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from "react-router-dom";
 import logoIcon from '/src/assets/Logo-PetMap.svg'; // Import icons
 import gitHub from '/src/assets/GitHub.png'; // Import icons
+import { useSaveFavorites } from './hooks/saveFavorites';
 
 // Home component with header, main content, and footer
 function Home() {
@@ -10,6 +11,9 @@ function Home() {
   
     // 2. Initialize the navigate function
     const navigate = useNavigate();
+
+    // Grab favorites from the custom hook
+    const { favorites } = useSaveFavorites();
 
     // 3. Create the onClick handler
     const handleSearchClick = () => {
@@ -49,10 +53,14 @@ function Home() {
 
                 {/* Favorites buton */}
                 <div className="fav-container flex-row">
-                    <div id="favorites-btn">
-                        <p id="favorites-count" className="icon-text libre-franklin-700">0</p>
-                    </div>
-                    <Link className="nav-sections libre-franklin-700" to="/favorites">Favorites</Link>
+                    <Link className="nav-sections" to="/favorites" id="favorites" style={{ textDecoration: 'none' }}> 
+                        <div id="favorites-btn" >
+                            <p id="favorites-count" className="icon-text libre-franklin-700">{favorites.length}</p>
+                        </div>
+                        <p className="libre-franklin-700">
+                            Favorites
+                        </p>
+                    </Link>
                 </div> 
             </header>
             <main>

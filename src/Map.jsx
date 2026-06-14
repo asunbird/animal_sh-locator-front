@@ -220,16 +220,16 @@ function Map() {
                     </button>
                 </form>
 
-               
+               {/* Favorites buton */}
                 <div className="fav-container flex-row">
-                    <Link to="/favorites" id="favorites" style={{ textDecoration: 'none' }}> 
-                        <p id="favorites-count" className="icon-text libre-franklin-700">
-                            {favorites.length}
+                    <Link className="nav-sections" to="/favorites" id="favorites" style={{ textDecoration: 'none' }}> 
+                        <div id="favorites-btn" >
+                            <p id="favorites-count" className="icon-text libre-franklin-700">{favorites.length}</p>
+                        </div>
+                        <p className="libre-franklin-700">
+                            Favorites
                         </p>
                     </Link>
-                    <p className="libre-franklin-700">
-                        Favorites
-                    </p>
                 </div> 
 
                 <div className="round-container-vert">
