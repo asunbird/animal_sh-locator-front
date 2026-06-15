@@ -133,11 +133,6 @@ export default function ShelterCard({ shelter, onAction, onCardClick, isFavorite
           </div>
         )}
         
-      <div className="card-actions">
-        <button className="view-on-map-btn" onClick={() => onAction(shelter)}>
-          View on Map
-        </button>
-      </div>
 
       </div>
     </div>

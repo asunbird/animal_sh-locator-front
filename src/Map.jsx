@@ -252,15 +252,21 @@ function Map() {
                     </button>
                 </form>
 
+                
                 {/* Search in this area Btn */}
-                <div >
-                     <button className="round-container bg-cyan-blue"
+                <div>
+                    <button 
+                        className="round-container bg-cyan-blue"
                         onClick={searchInArea}
                         title="Search in this area"
+                        disabled={isLoadingShelters}
                     >
-                        <p className="libre-franklin-700">Search this area</p>
+                        <p className="libre-franklin-700">
+                            {isLoadingShelters ? 'Searching...' : 'Search this area'}
+                        </p>
                     </button>
                 </div>
+
 
                {/* Favorites buton */}
                 <div className="fav-container flex-row">
@@ -341,43 +347,6 @@ function Map() {
                     </div>
                 )}
 
-                {/* UI Overlay */}
-                <section id="map" style={{ pointerEvents: 'none' }}>
-                    <div id="map-control" style={{ pointerEvents: 'auto' }}>
-                        <button className="map-btn" onClick={handleZoomIn}>+</button>
-                        <button className="map-btn" onClick={handleZoomOut}>-</button>
-                        
-                        {/* Search in this area button */}
-                        <button 
-                            className="map-btn search-area-btn"
-                            onClick={() => fetchShelters()} 
-                            disabled={isLoadingShelters}
-                        >
-                            {isLoadingShelters ? '...' : 'Search Area'}
-                        </button>
-                    </div>
-                    <div className="items-grid">
-                        {shelters.map(shelter => (
-                            <div key={shelter.id} id={`card-${shelter.id}`} >
-                                <ShelterCard 
-                                    shelter={shelter}
-                                    isFavorite={isFavorite(shelter.id)}
-                                    onToggleFavorite={toggleFavorite}
-                                    isActive={activeShelterId === shelter.id}
-                                    onAction={goToShelter}
-                                    onCardClick={(selectedShelter) => {
-                                        setActiveShelterId(selectedShelter.id);
-                                        goToShelter(selectedShelter); // Pans the map to the pin
-                                    }}
-                                />
-                            </div>
-                        ))}
-                    </div>
-
-                    <div id="map-close" style={{ pointerEvents: 'auto' }}>
-                        <button className="map-btn" onClick={() => setHasSearched(false)}>x</button>
-                    </div>
-                </section>
             </main>
         </section>
     )
