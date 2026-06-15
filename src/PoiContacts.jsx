@@ -37,22 +37,31 @@ export default function ShelterCard({ shelter, onCardClick, isFavorite, onToggle
           borderRadius: '16px',
           padding: '16px',
           pointerEvents: 'auto',
-          minHeight: '140px',
+          // Changed to dynamically adjust height based on active state
+          minHeight: isActive ? '140px' : 'auto',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between'
-        }}>
+        }}
+    >
 
-      <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+      {/* 1. ALWAYS VISIBLE: Name and Coordinates */}
+      <div className="card-header" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
           <h3 style={{ margin: '0 0 8px 0', fontSize: '1.1rem' }}>{name}</h3>
-          <p style={{ margin: '0 0 12px 0', fontSize: '0.85rem', color: '#555' }}>📍 {address}</p> 
-      </div>
-      {/* Action Buttons Row */}
-      <div className="card-actions" style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '12px' }}>
-        {/* Directions */}
-        <div className="contact-item location-data" style={{ marginTop: '4px', paddingTop: '4px', borderTop: '1px dashed #eee', fontSize: '0.8rem', color: '#888' }}>
-          <strong>Location:</strong> {lat?.toFixed(5)}, {lon?.toFixed(5)}
-          <div style={{ marginTop: '4px', display: 'flex', gap: '10px' }}>
+          <p style={{ margin: '0', fontSize: '0.8rem', color: '#888' }}>
+            📍 {lat?.toFixed(5)}, {lon?.toFixed(5)}
+          </p> 
+        </div>
+
+      {/* 2. EXPANDED VIEW: Rendered only when card is active */}
+      {isActive && (
+        <div className="expanded-content" style={{ marginTop: '12px', paddingTop: '12px', borderTop: '1px solid #eee' }}>
+          
+          <p style={{ margin: '0 0 12px 0', fontSize: '0.85rem', color: '#555' }}>📍 {address}</p>
+
+          {/* Action Buttons Row */}
+          <div className="card-actions" style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '12px' }}>
+            
             <a href={`https://www.google.com/maps/search/?api=1&query=${lat},${lon}`} 
               target="_blank" rel="noopener noreferrer" 
               style={actionBtnStyle}
@@ -67,76 +76,74 @@ export default function ShelterCard({ shelter, onCardClick, isFavorite, onToggle
             >
               🍎 Apple Maps
             </a>
+
+            {/* Call */}
+            {phone && (
+              <a href={`tel:${phone}`} 
+                style={actionBtnStyle}
+                onClick={(e) => e.stopPropagation()} 
+              >
+                📞 Call
+              </a>
+            )}
+
+            {/* Save/Favorite */}
+            <button 
+              style={actionBtnStyle}
+              className={`heart-btn ${isFavorite ? 'is-fav' : ''}`} 
+              onClick={(e) => {
+                e.stopPropagation();
+                onToggleFavorite(shelter);
+              }}
+              >
+                ❤️
+            </button>
+
+            {/* Share */}
+            <button style={actionBtnStyle}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleShare();
+              }}
+            >
+              ↗ Share
+            </button>
+          </div>
+
+          {/* Contacts Data */}
+          <div className="card-contacts">
+            { website && (
+              <div className="contact-item">
+                <strong>Website:</strong>{' '}
+                <a href={website.startsWith('http') ? website : `https://${website}`} target="_blank" rel="noopener noreferrer">
+                  {website}
+                </a>
+              </div>
+            )}
+            { phone && (
+              <div className="contact-item">
+                <strong>Phone:</strong> <a href={`tel:${phone}`}>{phone}</a>
+              </div>
+            )}
+            { email && (
+              <div className="contact-item">
+                <strong>Email:</strong>{' '}
+                <form action={`mailto:${email}`} method="POST" encType="text/plain" style={{ display: 'inline' }}>
+                  <button type="submit" className="email-link-btn">
+                    {email}
+                  </button>
+                </form>
+              </div>
+            )}
+            {tags.opening_hours && (
+              <div className="contact-item">
+                <strong>Hours:</strong> {tags.opening_hours}
+              </div>
+            )}
           </div>
         </div>
-
-        {/* Call */}
-        {phone && (
-          <a href={`tel:${phone}`} 
-            style={actionBtnStyle}
-            onClick={(e) => e.stopPropagation()} 
-          >
-            📞 Call
-          </a>
-        )}
-
-        {/* Save/Favorite */}
-        <button 
-          style={actionBtnStyle}
-          className={`heart-btn ${isFavorite ? 'is-fav' : ''}`} 
-          onClick={(e) => {
-            e.stopPropagation();
-            onToggleFavorite(shelter);
-          }}
-          >
-            ❤️
-        </button>
-
-        {/* Share */}
-        <button style={actionBtnStyle}
-          onClick={(e) => {
-            e.stopPropagation();
-            handleShare();
-          }}
-        >
-          ↗ Share
-        </button>
-      </div>
-
-      <div className="card-contacts">
-        { website && (
-          <div className="contact-item">
-            <strong>Website:</strong>{' '}
-            <a href={website.startsWith('http') ? website : `https://${website}`} target="_blank" rel="noopener noreferrer">
-              {website}
-            </a>
-          </div>
-        )}
-        { phone && (
-          <div className="contact-item">
-            <strong>Phone:</strong> <a href={`tel:${phone}`}>{phone}</a>
-          </div>
-        )}
-        { email && (
-          <div className="contact-item">
-            <strong>Email:</strong>{' '}
-            <form action={`mailto:${email}`} method="POST" encType="text/plain" style={{ display: 'inline' }}>
-              <button type="submit" className="email-link-btn">
-                {email}
-              </button>
-            </form>
-          </div>
-        )}
-        {tags.opening_hours && (
-          <div className="contact-item">
-            <strong>Hours:</strong> {tags.opening_hours}
-          </div>
-        )}
-        
-
-      </div>
+      )}
     </div>
-    
   );
 }
 
