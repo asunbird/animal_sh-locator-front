@@ -1,3 +1,4 @@
+
 /* --------------- .................... ----------------- */
 /* Global Styles and Variables */
 :root {
@@ -12,6 +13,9 @@
   --shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
   --black: #000000;
   --white: #FFFFFF;
+
+  /* heart icon variable (ensure the path is correct relative to your public or src folder) */
+  --heart-icon: url('/src/assets/icons/Heart-icon.svg');
 
   /* ... Font Families ... */
   /* <weight>: Use a value from 100 to 900 */
@@ -40,6 +44,9 @@
 /* Color Styles */
 .bg-cyan-blue {
   background-color: var(--bg-cyan-blue);
+}
+.bg-base {
+  background: var(--bg-base);
 }
 .text-black { color: var(--black); }
 .text-white { color: var(--white); }
@@ -105,7 +112,7 @@ span {
 .margin-h-20 {
   margin: 0 20px;
 }
-button { text-decoration: none; }
+button { text-decoration: none; cursor: pointer;}
 .icon {
   width: 20px;
   height: auto;
@@ -127,7 +134,6 @@ button { text-decoration: none; }
   align-items: center;
   border: 1px solid rgba(0, 0, 0, 1);
   border-radius: 32px;
-  background: rgba(255, 255, 255, 1);
 }
 .round-container-vert {
   z-index: 1;
@@ -135,29 +141,34 @@ button { text-decoration: none; }
   min-height: 90px;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: space-between;
   align-items: center;
   border: 1px solid rgba(0, 0, 0, 1);
   border-radius: 32px;
   background: rgba(255, 255, 255, 1);
 }
-.round-swith-btn{
+.round-switch-btn{
   z-index: 10;
-  height: 36px;
+  height: 45px;
   width: 36px;
   border: 1px solid rgba(0, 0, 0, 1);
-  border-radius: 32px;
+  border-radius: 32px 32px 0 0;
   background: rgba(205, 230, 224, 1);
   margin: 0;
   text-align: center;
 }
+.flip-vertical {
+  transform: rotate(180deg);
+}
 /* --------------- .................... ----------------- */
 /* -------------------------------- */
+
+/* ---------------------------- */
 /* header Styles*/
 header {
     width: 100%;
     min-height: 80px;
-    position: sticky;
+    position: fixed;
     padding: 20px;
     margin: 0;
     top: 0;
@@ -207,7 +218,7 @@ header {
   background: var(--primary-accent);
   transition: width 1s linear;
 }
-/* ---------------------------- */
+
 /* Language-Switch Styles Home*/
 .lang-switch-container {
   display: flex;
@@ -252,7 +263,7 @@ header {
   cursor: pointer;
   transition: all 0.2s; /* -- */
 }
-/* ---------------------------- */
+
 /* Navigation links Styles */
 .nav-links {
   display: flex;
@@ -263,11 +274,11 @@ header {
   list-style: none;
   cursor: pointer;
 }
-.nav-sections:hover, .autorisation:hover {
+.nav-sections:hover, #autorisation:hover {
     transform: scale(1.05);
     color: black;
 }
-.nav-sections:active, .autorisation:active {
+.nav-sections:active, #autorisation:active {
     transform: scale(0.95);
     color: black;
 }
@@ -280,7 +291,7 @@ header {
   font-size: 1.4rem;
   text-shadow: 1px 1px 2px var(--clr-accent-shadow);
 }
-.autorisation {
+#autorisation {
   width: fit-content;
   text-decoration: none;
   border: 1px solid var(--text-muted);
@@ -294,6 +305,8 @@ header {
 }
 /* --------------- .................... ----------------- */
 /* -------------------------------- */
+
+/* ---------------------------- */
 /* Home Content Styles */
 #home {
   display: grid;
@@ -321,17 +334,59 @@ main {
     margin-top: 0;
     margin-bottom: 60px; /* Space for fixed footer */
 }
+/* Call-To-Action Search Bar Styles */
+.search-bar-container {
+  width: 28%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  height: 36px;
+  min-width: 250px;
+  font-size: 16px;
+  border: 1px solid var(--text-muted);
+  padding: 0;
+  margin-top: 40vh;
+  border-radius: 20px;
+}
+.search-bar-container .search-input {
+  width: 80%;
+  height: 36px;
+  min-width: 174px;
+  font-size: 16px;
+  border: 1px solid var(--text-muted);
+  padding: 0 20px;
+  border-radius: 20px 0 0 20px;
+}
+.search-bar-container .search-button {
+  width: 20%;
+  height: 36px;
+  min-width: 76px;
+  font-size: 16px;
+  border: 1px solid var(--text-muted);
+  padding: 0 auto;
+  border-radius: 0 20px 20px 0;
+  position: sticky;
+  right: 0;
+  cursor: pointer;
+  background: var(--primary-accent);
+  color: black;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+
 /* Linked Elements Styles */
-#about, #contact {
+#about {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 20px;
     padding: 40px 20px;
-    width: 60%;
-    margin: 20px auto;
-    border-radius: 20px;
+    width: 100%;
+    height: 100vh;
+    margin: 0;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     background: rgba(255, 255, 255, 0.6);
 }
@@ -348,22 +403,9 @@ main {
   cursor: pointer;
   font-size: 16px;
 }
-/* ... Authorization form Styles ... */
-#sign-in {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 20px;
-    padding: 40px 20px;
-    width: 60%;
-    margin: 20px auto;
-    border-radius: 20px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    background: rgba(255, 255, 255, 0.6);
-}
-/* ... Favorites list Styles ... */
-#favorites-list {
+
+/* ... Authorization form Element Styles ... */
+#sign-in-container {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -375,6 +417,35 @@ main {
     border-radius: 20px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     background: rgba(255, 255, 255, 0.6);
+}
+.white-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding: 40px 20px;
+    width: 60%;
+    margin: 20px auto;
+    border-radius: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 1);
+}
+/* ... Favorites list Styles ... */
+#favorites-list-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 20px;
+    width: 100%;
+    height: 100vh;
+    margin: 0;
+    border-radius: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.6);
+    overflow: scroll;
+    padding: 0 0 40px 0;
 }
 .fav-list-card {
     display: flex;
@@ -388,9 +459,22 @@ main {
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     background: rgba(255, 255, 255, 1);
 }
-/* ... Profile Settings ... */
 
-#contact-settings {
+/* ... Profile Settings ... */
+#profile-settings-link {
+  width: fit-content;
+  text-decoration: none;
+  border: 1px solid var(--text-muted);
+  padding: 2px 12px;
+  border-radius: 12px;
+  transition: transform 0.3s ease-in-out;
+
+  color: var(--clr-text-main); /*  gray text color */
+  font-size: 1.4rem;
+  text-shadow: 1px 1px 2px var(--clr-accent-shadow);
+}
+
+#prof-settings-container {
   position: fixed;
   top: 16vh;
   left: 18vw;
@@ -430,81 +514,128 @@ form .user-contacts {
 #map-search {
     width: 100%;
     height: 100vh;
-    min-height: 450px;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
     padding: 0;
-    margin: 0;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    background: rgba(255, 255, 255, 0.8);
-    background-image: url("src/assets/Map-pic.png");
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: cover;
-    border: 1px solid #666;
+    margin: 0;  
+}
+#map-search .home-btn {
+  margin-left: 40px;
+}
+#leaflet-map {
+  height: 100vh;
+  width: 100%;
+}
+#map-main-content {
+  padding: 0;
+  width: 100%;
+  height: 100vh;
+  margin: 0;
+  z-index: 1; /* Ensure Leaflet z-index stays below interactive UI elements like the Drawer */
+  box-sizing: border-box;
+  }
+#map-navigation {
+  width: 100%;
+  z-index: 3; /* z-index for Map navigation interactive UI elements to stay above the map */
+  box-sizing: border-box;
+}
+#map-search-bar {
+  margin: 0;
 }
 
-/* Ensure Leaflet z-index stays below interactive UI elements like the Drawer */
-.leaflet-container {
-  z-index: 1;
+/* Status Message Refinement */
+.status-message {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 10px 20px;
+    border-radius: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    font-weight: bold;
+    color: #666;
+    text-align: center;
+    pointer-events: none;
+}
+/* Leaflet Popup Overrides */
+.leaflet-popup-content-wrapper {
+    border-radius: 8px;
+    padding: 5px;
+}
+/* POI Styles */
+/* Container overlaying the bottom of the map */
+.items-grid {
+    position: absolute;
+    bottom: 24px; /* Float right above the bottom edge */
+    left: 0;
+    right: 0;
+    z-index: 1000; /* Must be higher than Leaflet map (usually 400-500) */
+    
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+    gap: 16px;
+    padding: 10px 20px;
+    pointer-events: auto; /* Required to catch touches/clicks over the map */
+    
+    /* Native smooth scroll snapping */
+    scroll-snap-type: x mandatory; 
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+}
+/* Hide scrollbar for a cleaner mobile app look */
+.items-grid::-webkit-scrollbar {
+    display: none;
+}
+.items-grid {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+/* The individual wrapper for each card */
+.card-wrapper {
+    flex: 0 0 auto; /* Prevent cards from shrinking */
+    width: 85%; /* Shows a peek of the next card on mobile */
+    max-width: 340px;
+    scroll-snap-align: center; /* Snap to center of screen */
+}
+
+/* FAVORITES List Styles */
+#favorites {
   box-sizing: border-box;
+  width: 190px;
+  max-width: fit-content;
+  height: 40px;
+  max-height: fit-content;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  padding: 8px;
+  border: 1px solid #666;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
 }
 .fav-container{
   width: 12%;
   padding: 4px;
 }
-#favorites {
+#favorites-btn {
   width: 36px;
   height: 36px;
   display: flex;
   justify-content: center;
-  background-image: url("src/assets/icons/Heart-icon.svg");
+  /*  --heart-icon for favorites button */
+  background-image: var(--heart-icon);
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;
   margin: 0 4px;
-}
-
-.search-bar-container {
-  width: 28%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: row;
-  height: 36px;
-  min-width: 250px;
-  font-size: 16px;
-  border: 1px solid var(--text-muted);
-  padding: 0;
-  margin: 0;
-  border-radius: 20px;
-}
-.search-bar-container .search-input {
-  width: 80%;
-  height: 36px;
-  min-width: 174px;
-  font-size: 16px;
-  border: 1px solid var(--text-muted);
-  padding: 0 20px;
-  border-radius: 20px 0 0 20px;
-}
-.search-bar-container .search-button {
-  width: 20%;
-  height: 36px;
-  min-width: 76px;
-  font-size: 16px;
-  border: 1px solid var(--text-muted);
-  padding: 0 auto;
-  border-radius: 0 20px 20px 0;
-  position: sticky;
-  right: 0;
-  cursor: pointer;
-  background: var(--primary-accent);
-  color: black;
-  font-weight: bold;
-  text-decoration: none;
 }
 
 
@@ -588,6 +719,56 @@ footer a {
   height: auto;
   margin-left: 8px;
 }
+
+
+/* --------------- .................... ----------------- */
+/* -------------------------------- */
+/* SGNED IN Prrofile Styles */
+#prof-favorites-list-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 20px;
+  width: 100%;
+  height: 100vh;
+  margin: 0;
+  border-radius: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.6);
+  overflow: scroll;
+  padding: 0 0 40px 0;
+}
+#prof-favorites {
+  box-sizing: border-box;
+  width: 190px;
+  max-width: fit-content;
+  height: 40px;
+  max-height: fit-content;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  padding: 8px;
+  border: 1px solid #666;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+}
+#prof-favorites-btn {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  justify-content: center;
+  /*  --heart-icon for favorites button */
+  background-image: var(--heart-icon);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  margin: 0 4px;
+}
+
+
 /* --------------- .................... ----------------- */
 /* -------------------------------- */
 /* Responsive Styles */

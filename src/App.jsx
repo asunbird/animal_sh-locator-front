@@ -1,18 +1,16 @@
 
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { 
-  Home, 
-  Map 
-} from './Home.jsx';
-import { About, Info, Contact } from './Elements.jsx';
+import Map from './Map.jsx';
+import { About, Info, Contact } from './About.jsx';
 import Error from  './Error.jsx';
 import SignIn from  './SignIn.jsx';
 import EvolvingBackground from './EvolvingBackground.jsx';
 import Favorites from './Favorites.jsx'
 import {
-  ProfileHome,
+  Home,
   ProfileSettings
-  } from './ProfileHome.jsx'
+  } from './Home.jsx'
+
 
 
 function App() {
@@ -21,10 +19,11 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/signin" element={<SignIn />} />
-            <Route path="/profilehome" element={<ProfileHome />} >
-              <Route path="/profilehome/profilesettings" element={<ProfileSettings />} />
+            <Route path="/" element={<Home />} >
+              <Route path="/profilesettings" element={<ProfileSettings />} />
             </Route>
+            <Route path="/signin" element={<SignIn />} />
+         
             <Route path="/favorites" element={<Favorites />} />
             <Route path="/map" element={<Map />} />
             <Route path="/about" element={<About />} >
