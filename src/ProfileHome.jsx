@@ -1,15 +1,18 @@
-
 import { Link, useNavigate } from "react-router-dom";
 // Import icons
 import logoIcon from '/src/assets/Logo-PetMap.svg';
 import gitHub from '/src/assets/GitHub.png';
 import { Outlet } from "react-router-dom";
-
+import { useSaveFavorites } from './hooks/useSaveFavorites';
 
 
 // USER Profile-Home component with header, main content, and footer
 export function ProfileHome() {
     const navigate = useNavigate();
+
+    // Grab favorites from the custom hook
+    const { favorites } = useSaveFavorites();
+
     return (
         <section id="profile-home">
             <header>
@@ -36,13 +39,18 @@ export function ProfileHome() {
                         Profile Settings
                     </Link>
                     <Outlet/>
-                    <Link className="nav-sections" to="/about">About</Link>
                 </nav>
+
+                {/* Profile SignedIn Favorites buton */}
                 <div className="fav-container flex-row">
-                    <div id="favorites">
-                        <p id="favorites-count" className="icon-text libre-franklin-700">0</p>
-                    </div>
-                    <p className="libre-franklin-700">Favorites</p>
+                    <Link className="nav-sections" to="/profilefavorites" id="prof-favorites" style={{ textDecoration: 'none' }} > 
+                        <div id="prof-favorites-btn" >
+                            <p id="prof-favorites-count" className="icon-text libre-franklin-700">{favorites.length}</p>
+                        </div>
+                        <p className="libre-franklin-700" >
+                            Favorites
+                        </p>
+                    </Link>
                 </div> 
             </header>
             <main>

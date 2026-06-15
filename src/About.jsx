@@ -44,7 +44,7 @@ export function Contact() {
     )
 }
 
-const Elements =()=>{
+const AboutContent =()=>{
 
 }
-export default Elements;
+export default AboutContent;

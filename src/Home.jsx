@@ -4,6 +4,7 @@ import logoIcon from '/src/assets/Logo-PetMap.svg'; // Import icons
 import gitHub from '/src/assets/GitHub.png'; // Import icons
 import { useSaveFavorites } from './hooks/useSaveFavorites';
 
+
 // Home component with header, main content, and footer
 function Home() {
     // 1. Track what the user types
@@ -21,6 +22,11 @@ function Home() {
         // Navigate to the map page AND pass the search the search input in the background
         navigate('/map', { state: { requestedLocation: searchInput } }); 
     };
+
+    const handlerFavoritesHomeClick = () => {
+        navigate('/favorites');
+    };
+
 
     return (
         <section id="home">
@@ -48,20 +54,23 @@ function Home() {
                     <Link id="autorisation" to="/signin">
                         Sign in
                     </Link>
-                    <Link className="nav-sections" to="/about">About</Link>
-                </nav>
+                </nav>    
 
                 {/* Favorites buton */}
                 <div className="fav-container flex-row">
-                    <Link className="nav-sections" to="/favorites" id="favorites" style={{ textDecoration: 'none' }} > 
-                        <div id="favorites-btn" >
-                            <p id="favorites-count" className="icon-text libre-franklin-700">{favorites.length}</p>
-                        </div>
-                        <p className="libre-franklin-700" >
+                    <button className="nav-sections" id="favorites" style={{ textDecoration: 'none' }}
+                        onClick={handlerFavoritesHomeClick} 
+                        className="search-button" type="button" 
+                        >
+                            <div id="favorites-btn" >
+                                <p id="favorites-count" className="icon-text libre-franklin-700">{favorites.length}</p>
+                            </div>
+                            <p className="libre-franklin-700" >
                             Favorites
-                        </p>
-                    </Link>
-                </div> 
+                            </p>
+                    </button>
+                </div>
+                
             </header>
             <main>
                 <div className="home-content">
@@ -94,6 +103,10 @@ function Home() {
                 <a href="https://github.com/asunbird/Animal-shelters-Locator-Frontend" target="_blank" >
                     GitHub
                 </a>
+                 |
+                <div className="nav-links libre-franklin-700">
+                    <Link to="/about">About</Link>
+                </div>
             </footer>
         </section>
     );

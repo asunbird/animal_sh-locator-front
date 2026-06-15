@@ -2,15 +2,16 @@ import { Link } from "react-router-dom";
 import { useSaveFavorites } from './hooks/useSaveFavorites'; // Import hook
 import logoIcon from '/src/assets/Logo-PetMap.svg'; // Import icons
 
-function FavoritesList() {
+function ProfFavoritesList() {
   // Grab the favorites array and the toggle function from your hook
   const { favorites, toggleFavorite } = useSaveFavorites();
 
   return (
-        <section id="favorites-list-container">
+        <section id="prof-favorites-list-container">
             <header>
+                {/* Home Profile SignedIn buton */}
                 <div>
-                    <Link className="home-btn" to="/">
+                    <Link className="home-btn" to="/profilehome">
                         <img className="logo-icon" src={logoIcon} alt="Pet Map Logo" />
                     </Link> 
                 </div> 
@@ -69,4 +70,4 @@ function FavoritesList() {
     )
 }
 
-export default FavoritesList;
+export default ProfFavoritesList;
