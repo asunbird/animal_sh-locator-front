@@ -18,7 +18,7 @@ function SignIn() {
                     <input type="text" placeholder="Username" />
                     <input type="password" placeholder="Password" />
                     <button type="submit" id="submit-btn" >
-                        <Link to="/profilehome">Submit</Link>
+                        <Link to="/">Submit</Link>
                     </button>
                     <div>Don't Remember Your Password?</div>
                     <input type="email" placeholder="Email Address" />

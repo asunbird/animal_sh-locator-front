@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { Link, useNavigate } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import logoIcon from '/src/assets/Logo-PetMap.svg'; // Import icons
 import gitHub from '/src/assets/GitHub.png'; // Import icons
 import { useSaveFavorites } from './hooks/useSaveFavorites';
 
 
 // Home component with header, main content, and footer
-function Home() {
+export function Home() {
     // 1. Track what the user types
     const [searchInput, setSearchInput] = useState('');
   
@@ -54,6 +55,10 @@ function Home() {
                     <Link id="autorisation" to="/signin">
                         Sign in
                     </Link>
+                     <Link id="profile-settings-link" to="profilesettings">
+                        Profile Settings
+                    </Link>
+                    <Outlet/>
                 </nav>    
 
                 {/* Favorites buton */}
@@ -112,5 +117,35 @@ function Home() {
     );
 }
 
-export default Home;
+export function ProfileSettings() {
+    return (
+        <section id="profile-settings">
+            <div id="prof-settings-container">
+                <form id="user-contacts" action="">
+                    <div>Personal contacts data</div>
+                    <input type="text" placeholder="Username" /><br/>
+                    <input type="password" placeholder="Password" /><br/>
+                    <button type="submit" id="submit-btn" >
+                        Save Changes
+                    </button><br/>
+                    <input type="email" placeholder="Email Address" /><br/>
+                    <button type="button">Reset Password</button>
+                </form><br/>
+                <div id="favorites-settings">
+                    <div id="level-settings" className="libre-franklin-700">Favorites list Settings</div>
+                    <button type="button">Share Favorites list</button>
+                </div><br/>
+                <div id="level-settings" className="libre-franklin-700">Level Settings</div><br/>
+                 <button className="libre-franklin-700" type="button">
+                    <Link to="/">Close X</Link>   
+                </button>
+            </div>
+        </section>
+    )
+}
+
+
+const HomeCmponents =()=>{
+}
+export default HomeCmponents;
 
