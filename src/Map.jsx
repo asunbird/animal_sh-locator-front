@@ -185,7 +185,12 @@ function Map() {
 
             const response = await fetch("https://overpass-api.de/api/interpreter", {
                 method: 'POST',
-                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Accept': 'application/json',
+                    'Origin': window.location.hostname,
+                    'Referer': 'https://overpass-api.de'
+                },
                 body: `data=${encodeURIComponent(overpassQuery)}`
             });
 
