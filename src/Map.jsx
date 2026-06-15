@@ -14,13 +14,13 @@ import { useLocationSearch } from './hooks/useLocationSearch'; // <-- Location s
 import L from 'leaflet';
 import pawIcon from './assets/point.svg';
 import 'leaflet/dist/leaflet.css';
-let DefaultIcon = L.icon({
+const customPawIcon = new L.Icon({
     iconUrl: pawIcon,
     iconSize: [32, 32],
     iconAnchor: [16, 32],
     popupAnchor: [0, -32]
 });
-L.Marker.prototype.options.icon = DefaultIcon;
+
 
 // Rendering a Map
 function Map() {
@@ -306,7 +306,7 @@ function Map() {
                         <ShelterMarkerCard 
                             key={shelter.id}
                             shelter={shelter} 
-                            icon={DefaultIcon}
+                            icon={customPawIcon} // <-- PASS THE PAW ICON HERE
                             // If the current pin matches the active card, pass a highlighted icon state if desired
                             isActive={activeShelterId === shelter.id}
                             isFavorite={isFavorite} // <--- Pass the function, do not execute it here
