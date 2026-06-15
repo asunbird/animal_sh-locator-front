@@ -1,6 +1,6 @@
 // Rendering Contacts card
 
-function ShelterCard({ shelter, onAction, onCardClick, isFavorite, onToggleFavorite, isActive }) {
+export default function ShelterCard({ shelter, onAction, onCardClick, isFavorite, onToggleFavorite, isActive }) {
   const tags = shelter.tags || {};
   const name = tags.name || 'Unknown Shelter';
   const address = [tags['addr:housenumber'], tags['addr:street'], tags['addr:city']].filter(Boolean).join(' ') || 'No address provided';
@@ -10,10 +10,11 @@ function ShelterCard({ shelter, onAction, onCardClick, isFavorite, onToggleFavor
   const lat = shelter.lat || (shelter.center && shelter.center.lat);
   const lon = shelter.lon || (shelter.center && shelter.center.lon);
  
-  const handleShare = async (e) => {
-    e.stopPropagation(); // Prevent card click event
+  const handleShare = async () => {
     if (navigator.share) {
       await navigator.share({ title: name, url: website || window.location.href });
+    } else {
+      alert("Sharing is not supported on this browser.");
     }
   };
 
@@ -25,35 +26,74 @@ function ShelterCard({ shelter, onAction, onCardClick, isFavorite, onToggleFavor
         style={{ 
           cursor: 'pointer', 
           border: isActive ? '2px solid #007AFF' : '1px solid #ddd',
-          boxShadow: isActive ? '0 4px 12px rgba(0,122,255,0.2)' : 'none',
-          transition: 'all 0.2s ease-in-out',
+          boxShadow: isActive ? '0 4px 12px rgba(0,122,255,0.3)' : '0 2px 8px rgba(0,0,0,0.1)',
+          transition: 'all 0.3s ease',
+          background: 'white',
+          borderRadius: '16px',
           padding: '16px',
-          borderRadius: '12px',
-          backgroundColor: '#fff'
+          pointerEvents: 'auto',
+          minHeight: '140px',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between'
         }}>
 
       <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-          <h3 style={{ margin: 0, fontSize: '1.2rem', color: '#333' }}>{name}</h3>
-        <button 
-          className={`heart-btn ${isFavorite ? 'is-fav' : ''}`} 
-          onClick={() => onToggleFavorite(shelter)}
-        >
-          ❤️
-      </button>
+          <h3 style={{ margin: '0 0 8px 0', fontSize: '1.1rem' }}>{name}</h3>
+          <p style={{ margin: '0 0 12px 0', fontSize: '0.85rem', color: '#555' }}>📍 {address}</p> 
       </div>
-
-      {address && <p style={{ color: '#666', margin: '8px 0', fontSize: '0.9rem' }}>📍 {address}</p>}
-      
       {/* Action Buttons Row */}
-      <div style={{ display: 'flex', gap: '8px', marginTop: '16px', flexWrap: 'wrap' }}>
+      <div className="card-actions" style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: 'auto' }}>
+        {/* Directions */}
+        <div className="contact-item location-data" style={{ marginTop: '4px', paddingTop: '4px', borderTop: '1px dashed #eee', fontSize: '0.8rem', color: '#888' }}>
+          <strong>Location:</strong> {lat?.toFixed(5)}, {lon?.toFixed(5)}
+          <div style={{ marginTop: '4px', display: 'flex', gap: '10px' }}>
+            <a href={`https://www.google.com/maps/search/?api=1&query=${lat},${lon}`} 
+              target="_blank" rel="noopener noreferrer" 
+              style={actionBtnStyle}
+              onClick={(e) => e.stopPropagation()}
+            >
+              📍 Google Maps
+            </a>
+            <a href={`https://maps.apple.com/?q=${lat},${lon}`} 
+              target="_blank" rel="noopener noreferrer" 
+              style={actionBtnStyle}
+              onClick={(e) => e.stopPropagation()}
+            >
+              🍎 Apple Maps
+            </a>
+          </div>
+        </div>
+
+        {/* Call */}
         {phone && (
-          <a href={`tel:${phone}`} onClick={(e) => e.stopPropagation()} 
-             style={{ background: '#f0f0f0', padding: '6px 12px', borderRadius: '20px', textDecoration: 'none', color: '#333', fontSize: '0.85rem', fontWeight: '600' }}>
+          <a href={`tel:${phone}`} 
+            style={actionBtnStyle}
+            onClick={(e) => e.stopPropagation()} 
+          >
             📞 Call
           </a>
         )}
-        <button onClick={handleShare} 
-                style={{ background: '#f0f0f0', border: 'none', padding: '6px 12px', borderRadius: '20px', color: '#333', fontSize: '0.85rem', fontWeight: '600', cursor: 'pointer' }}>
+
+        {/* Save/Favorite */}
+        <button 
+          style={actionBtnStyle}
+          className={`heart-btn ${isFavorite ? 'is-fav' : ''}`} 
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggleFavorite(shelter);
+          }}
+          >
+            ❤️
+        </button>
+
+        {/* Share */}
+        <button style={actionBtnStyle}
+          onClick={(e) => {
+            e.stopPropagation();
+            handleShare();
+          }}
+        >
           ↗ Share
         </button>
       </div>
@@ -87,19 +127,8 @@ function ShelterCard({ shelter, onAction, onCardClick, isFavorite, onToggleFavor
             <strong>Hours:</strong> {tags.opening_hours}
           </div>
         )}
-        <div className="contact-item location-data" style={{ marginTop: '4px', paddingTop: '4px', borderTop: '1px dashed #eee', fontSize: '0.8rem', color: '#888' }}>
-          <strong>Location:</strong> {lat?.toFixed(5)}, {lon?.toFixed(5)}
-          <div style={{ marginTop: '4px', display: 'flex', gap: '10px' }}>
-            <a href={`https://www.google.com/maps/search/?api=1&query=${lat},${lon}`} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--secondary-accent)', textDecoration: 'none', fontWeight: 'bold' }}>
-              📍 Google Maps
-            </a>
-            <a href={`https://maps.apple.com/?q=${lat},${lon}`} target="_blank" rel="noopener noreferrer" style={{ color: '#007AFF', textDecoration: 'none', fontWeight: 'bold' }}>
-              🍎 Apple Maps
-            </a>
-          </div>
-        </div>
+        
       <div className="card-actions">
-
         <button className="view-on-map-btn" onClick={() => onAction(shelter)}>
           View on Map
         </button>
@@ -111,6 +140,16 @@ function ShelterCard({ shelter, onAction, onCardClick, isFavorite, onToggleFavor
   );
 }
 
-
-export default ShelterCard;
-
+// Simple styling object for the buttons
+const actionBtnStyle = {
+  background: '#f1f3f4',
+  border: 'none',
+  borderRadius: '8px',
+  padding: '6px 10px',
+  fontSize: '0.8rem',
+  fontWeight: 'bold',
+  color: '#3c4043',
+  textDecoration: 'none',
+  cursor: 'pointer',
+  display: 'inline-block'
+};

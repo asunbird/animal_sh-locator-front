@@ -7,7 +7,7 @@ import { MapContainer, TileLayer } from 'react-leaflet'
 import ShelterCard from './PoiContacts.jsx';
 import ShelterMarkerCard from './functions/ShelterMarkerCard.jsx';
 
-import { useSaveFavorites } from './hooks/saveFavorites';
+import { useSaveFavorites } from './hooks/useSaveFavorites.js';
 import { useLocationSearch } from './hooks/useLocationSearch'; // <-- Location search hook
 
 // Fix for default marker icon in leaflet with bundler
@@ -39,6 +39,16 @@ function Map() {
     const [shelters, setShelters] = useState([]);
     const [viewMode, setViewMode] = useState('map'); // 'map' | 'list' | 'favorites'
 
+    const handleMarkerClick = (shelter) => {
+    setActiveShelterId(shelter.id);
+    goToShelter(shelter); // Pans map to marker
+
+        // Automatically scroll the horizontal card list to the active card
+        const cardElement = document.getElementById(`card-${shelter.id}`);
+        if (cardElement) {
+            cardElement.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        }
+    };
 
     // Ensure map flies to search location if map wasn't ready during initial search
     useEffect(() => {
@@ -297,9 +307,10 @@ function Map() {
                             key={shelter.id}
                             shelter={shelter} 
                             icon={DefaultIcon}
-                            isFavorite={isFavorite}
+                            isFavorite={isFavorite} // <--- Pass the function, do not execute it here
                             toggleFavorite={toggleFavorite}
                             onMarkerClick={(selectedShelter) => {
+                                handleMarkerClick(shelter);
                                 setActiveShelterId(selectedShelter.id);
                                 // Automatically scroll the list below to the clicked card
                                 const cardElement = document.getElementById(`card-${selectedShelter.id}`);
@@ -310,6 +321,23 @@ function Map() {
                         />
                     ))}
                 </MapContainer> 
+
+                {/* Card List positioned over the bottom of the map */}
+                <div className="items-grid">
+                    {shelters.map(shelter => (
+                        <div key={shelter.id} id={`card-${shelter.id}`} className="card-wrapper">
+                            <ShelterCard 
+                                shelter={shelter}
+                                isFavorite={isFavorite(shelter.id)}
+                                onToggleFavorite={toggleFavorite}
+                                isActive={activeShelterId === shelter.id}
+                                onCardClick={(selectedShelter) => {
+                                    handleMarkerClick(selectedShelter); // Reuse same logic for card tap!
+                                }}
+                            />
+                        </div>
+                    ))}
+                </div>
 
                 {/* Status Message for empty results */}
                 {!isLoadingShelters && hasSearched && shelters.length === 0 && (

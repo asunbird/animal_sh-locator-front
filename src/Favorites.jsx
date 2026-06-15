@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { useSaveFavorites } from './hooks/saveFavorites'; // Import hook
+import { useSaveFavorites } from './hooks/useSaveFavorites'; // Import hook
 import logoIcon from '/src/assets/Logo-PetMap.svg'; // Import icons
 
 function FavoritesList() {

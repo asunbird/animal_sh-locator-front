@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from "react-router-dom";
 import logoIcon from '/src/assets/Logo-PetMap.svg'; // Import icons
 import gitHub from '/src/assets/GitHub.png'; // Import icons
-import { useSaveFavorites } from './hooks/saveFavorites';
+import { useSaveFavorites } from './hooks/useSaveFavorites';
 
 // Home component with header, main content, and footer
 function Home() {
