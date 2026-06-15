@@ -1,5 +1,4 @@
 // Rendering Contacts card
-
 export default function ShelterCard({ shelter, onAction, onCardClick, isFavorite, onToggleFavorite, isActive }) {
   const tags = shelter.tags || {};
   const name = tags.name || 'Unknown Shelter';
@@ -12,7 +11,14 @@ export default function ShelterCard({ shelter, onAction, onCardClick, isFavorite
  
   const handleShare = async () => {
     if (navigator.share) {
-      await navigator.share({ title: name, url: website || window.location.href });
+      try {
+        await navigator.share({ title: name, url: website || window.location.href });
+      } catch (error) {
+        // Only log the error if it's NOT the user canceling the share dialog
+        if (error.name !== 'AbortError') {
+          console.error("Error sharing:", error);
+        }
+      }
     } else {
       alert("Sharing is not supported on this browser.");
     }
