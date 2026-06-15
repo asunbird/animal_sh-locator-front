@@ -1,5 +1,5 @@
 // Rendering Contacts card
-export default function ShelterCard({ shelter, onAction, onCardClick, isFavorite, onToggleFavorite, isActive }) {
+export default function ShelterCard({ shelter, onCardClick, isFavorite, onToggleFavorite, isActive }) {
   const tags = shelter.tags || {};
   const name = tags.name || 'Unknown Shelter';
   const address = [tags['addr:housenumber'], tags['addr:street'], tags['addr:city']].filter(Boolean).join(' ') || 'No address provided';

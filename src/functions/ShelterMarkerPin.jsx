@@ -1,9 +1,8 @@
-import { Marker, Popup } from 'react-leaflet';
+import { Marker } from 'react-leaflet';
 
-function ShelterMarkerCard({ shelter, icon, onMarkerClick, isActive }) {
+function ShelterMarkerPin({ shelter, icon, onMarkerClick, isActive }) {
 
-    const tags = shelter.tags || {};
-    const name = tags.name || 'Unknown Shelter';
+
 
     // Support both nodes (direct lat/lon) and ways/relations (center property)
     const lat = shelter.lat || (shelter.center && shelter.center.lat);
@@ -28,13 +27,9 @@ function ShelterMarkerCard({ shelter, icon, onMarkerClick, isActive }) {
                    if (onMarkerClick) onMarkerClick(shelter);
                 }
             }}
-        >
-            {/* Keep the popup minimal, just the name. The bottom card has the rest! */}
-            <Popup closeButton={false}>
-                <strong style={{ fontSize: '1rem' }}>{name}</strong>
-            </Popup>
+        >   
         </Marker>
     );
 }
 
-export default ShelterMarkerCard;
+export default ShelterMarkerPin;

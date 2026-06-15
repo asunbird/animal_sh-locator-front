@@ -5,7 +5,7 @@ import logoIcon from '/src/assets/Logo-PetMap.svg'; // Import icons
 // Import the Map Container for Leaflet
 import { MapContainer, TileLayer } from 'react-leaflet'
 import ShelterCard from './PoiContacts.jsx';
-import ShelterMarkerCard from './functions/ShelterMarkerCard.jsx';
+import ShelterMarkerPin from './functions/ShelterMarkerPin.jsx';
 
 import { useSaveFavorites } from './hooks/useSaveFavorites.js';
 import { useLocationSearch } from './hooks/useLocationSearch'; // <-- Location search hook
@@ -309,7 +309,7 @@ function Map() {
 
                     {/* Render overpass markers */}
                     {shelters.map(shelter => (
-                        <ShelterMarkerCard 
+                        <ShelterMarkerPin 
                             key={shelter.id}
                             shelter={shelter} 
                             icon={customPawIcon} // <-- PASS THE PAW ICON HERE
