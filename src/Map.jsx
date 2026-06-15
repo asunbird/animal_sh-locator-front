@@ -185,13 +185,10 @@ function Map() {
 
             const response = await fetch("https://overpass-api.de/api/interpreter", {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'Accept': 'application/json'
-                },
+                mode: 'no-cors',
                 body: `data=${encodeURIComponent(overpassQuery)}`
             });
-            console.log(response);
+
             if (!response.ok) {
                 throw new Error(`Status ${response.status}`);
             }
