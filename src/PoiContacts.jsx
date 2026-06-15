@@ -9,15 +9,14 @@ export default function ShelterCard({ shelter, onAction, onCardClick, isFavorite
   const lat = shelter.lat || (shelter.center && shelter.center.lat);
   const lon = shelter.lon || (shelter.center && shelter.center.lon);
  
-  const handleShare = async () => {
+  const handleShare = async (e) => {
+    e.stopPropagation(); // Prevent card click event
     if (navigator.share) {
       try {
         await navigator.share({ title: name, url: website || window.location.href });
       } catch (error) {
         // Only log the error if it's NOT the user canceling the share dialog
-        if (error.name !== 'AbortError') {
-          console.error("Error sharing:", error);
-        }
+        if (error.name !== 'AbortError') console.error("Error sharing:", error);
       }
     } else {
       alert("Sharing is not supported on this browser.");
@@ -49,7 +48,7 @@ export default function ShelterCard({ shelter, onAction, onCardClick, isFavorite
           <p style={{ margin: '0 0 12px 0', fontSize: '0.85rem', color: '#555' }}>📍 {address}</p> 
       </div>
       {/* Action Buttons Row */}
-      <div className="card-actions" style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: 'auto' }}>
+      <div className="card-actions" style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '12px' }}>
         {/* Directions */}
         <div className="contact-item location-data" style={{ marginTop: '4px', paddingTop: '4px', borderTop: '1px dashed #eee', fontSize: '0.8rem', color: '#888' }}>
           <strong>Location:</strong> {lat?.toFixed(5)}, {lon?.toFixed(5)}

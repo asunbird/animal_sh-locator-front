@@ -307,32 +307,27 @@ function Map() {
                             key={shelter.id}
                             shelter={shelter} 
                             icon={DefaultIcon}
+                            // If the current pin matches the active card, pass a highlighted icon state if desired
+                            isActive={activeShelterId === shelter.id}
                             isFavorite={isFavorite} // <--- Pass the function, do not execute it here
                             toggleFavorite={toggleFavorite}
-                            onMarkerClick={(selectedShelter) => {
-                                handleMarkerClick(shelter);
-                                setActiveShelterId(selectedShelter.id);
-                                // Automatically scroll the list below to the clicked card
-                                const cardElement = document.getElementById(`card-${selectedShelter.id}`);
-                                if (cardElement) {
-                                    cardElement.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-                                }
-                            }}
+                            onMarkerClick={() => handleMarkerClick(shelter)} // <-- This triggers the sync
                         />
                     ))}
                 </MapContainer> 
 
                 {/* Card List positioned over the bottom of the map */}
-                <div className="items-grid">
+                <div className="items-grid" style={{ display: 'flex', overflowX: 'auto', gap: '16px', padding: '16px' }} >
                     {shelters.map(shelter => (
-                        <div key={shelter.id} id={`card-${shelter.id}`} className="card-wrapper">
+                        <div key={shelter.id} id={`card-${shelter.id}`} className="card-wrapper" style={{ minWidth: '300px' }} >
                             <ShelterCard 
                                 shelter={shelter}
                                 isFavorite={isFavorite(shelter.id)}
                                 onToggleFavorite={toggleFavorite}
-                                isActive={activeShelterId === shelter.id}
+                                isActive={activeShelterId === shelter.id} // <-- Syncs highlight to card
                                 onCardClick={(selectedShelter) => {
-                                    handleMarkerClick(selectedShelter); // Reuse same logic for card tap!
+                                    setActiveShelterId(selectedShelter.id);
+                                    goToShelter(selectedShelter); // Pans map to pin
                                 }}
                             />
                         </div>
