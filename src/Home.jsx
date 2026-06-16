@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Link, useNavigate } from "react-router-dom";
-import { Outlet } from "react-router-dom";
+import { Link, useNavigate, Outlet } from "react-router-dom";
+import { useTranslation } from 'react-i18next'; // 1. Import useTranslation
 import logoIcon from '/src/assets/Logo-PetMap.svg'; // Import icons
 import gitHub from '/src/assets/GitHub.png'; // Import icons
 import { useSaveFavorites } from './hooks/useSaveFavorites';
@@ -8,33 +8,49 @@ import { useSaveFavorites } from './hooks/useSaveFavorites';
 
 // Home component with header, main content, and footer
 function Home() {
-    // 1. Track what the user types
+    // Initialize translation hook
+    const { t, i18n } = useTranslation();
+
+    // Track what the user types
     const [searchInput, setSearchInput] = useState('');
   
-    // 2. Initialize the navigate function
+    // Initialize the navigate function
     const navigate = useNavigate();
 
     // Grab favorites from the custom hook
     const { favorites } = useSaveFavorites();
 
-    // 3. Create the onClick handler
+    // Create the onClick handler
     const handleSearchClick = () => {
         if (!searchInput.trim()) return; // Prevent searching if the input is empty
+
+        // Passing the search input to the map.
         // Navigate to the map page AND pass the search the search input in the background
-        navigate('/map', { state: { requestedLocation: searchInput } }); 
+        // If backend needs to know the language of the search, you can pass i18n.language here too.
+        navigate('/map', { 
+            state: { 
+                requestedLocation: searchInput,
+                searchLanguage: i18n.language // Added language context for the search function
+             } 
+            }); 
     };
 
     const handlerFavoritesHomeClick = () => {
         navigate('/favorites');
     };
 
-
-
+        {/*
         // Track selected language
         const [userLanguage, setUserLanguage] = useState('ES');
+        */}
 
+        // Update the language toggle handler
         const handleLangToggle = (e) => {
-            const selectedLanguage = e.target.value;
+            const selectedLanguage = e.target.value.toLowerCase(); // 'es' or 'en'
+            i18n.changeLanguage(selectedLanguage);
+            // console.log(`User language changed to: ${selectedLanguage.toUpperCase()}`);
+        };
+            {/*
             setUserLanguage(selectedLanguage);
 
             if (selectedLanguage === "ES") {
@@ -44,8 +60,10 @@ function Home() {
             } else {
                 console.log("Error: Capture changes.");
             }
-        }
-            
+            */}
+        
+            // Derived state for the toggle visual dot
+            const isEnglish = i18n.resolvedLanguage?.startsWith('en');
 
 
     return (
@@ -54,41 +72,42 @@ function Home() {
                 <div>
                     <img className="logo-icon" src={logoIcon} alt="Pet Map Logo" />
                 </div>
-                {/* Level Bage */}  
+                {/* Level Badge - Translated */}  
                 <div id="level" className="level-badge">
-                    <span>Level 1</span>
+                    <span>{t('level')}</span>
                     <div className="level-progress-bar">
                         <div className="progress-fill" style={{ width: '50%' }}></div>
                     </div>
                 </div>
-                {/* Language Switcher ES-EN */}
 
+                {/* Language Switcher ES-EN */}
                 <div id="lang" className="lang-switch-container">
                     <button onClick={handleLangToggle} id="lang-ES-btn" className="lang-btns" value="ES">ES</button>
                     <div className="lang-toggle-btn">
-                        <div className={`lang-toggle-point ${userLanguage === "EN" ? "float-r" : "float-l"}`}></div>
+                        <div className={`lang-toggle-point ${isEnglish ? "float-r" : "float-l"}`}></div>
                     </div>
                     <button onClick={handleLangToggle} id="lang-EN-btn" className="lang-btns" value="EN">EN</button>
                 </div>
 
                 <nav className="nav-links jost-700"> 
                     <Link id="autorisation" to="/signin">
-                        Sign in
+                        {t('signIn')}
                     </Link>
                     <Outlet/>
                 </nav>    
 
-                {/* Favorites buton */}
+                {/* Favorites button - Translated */}
                 <div className="fav-container flex-row">
-                    <button className="nav-sections" id="favorites" style={{ textDecoration: 'none' }}
+                    <button id="favorites" style={{ textDecoration: 'none' }}
+                        className="search-button nav-sections"
                         onClick={handlerFavoritesHomeClick} 
-                        className="search-button" type="button" 
+                        type="button" 
                         >
                             <div id="favorites-btn" >
                                 <p id="favorites-count" className="icon-text libre-franklin-700">{favorites.length}</p>
                             </div>
                             <p className="libre-franklin-700" >
-                            Favorites
+                                {t('favorites')}
                             </p>
                     </button>
                 </div>
@@ -96,13 +115,13 @@ function Home() {
             </header>
             <main>
                 <div className="home-content">
-                    <h2 className="jost-700">FIND THE ANIMAL SHELTER NEAR YOU</h2>
+                    {/* Heading - Translated */}
+                    <h2 className="jost-700">{t('heading')}</h2>
                     <div className="search-bar-container">
-
-                        {/* Updates a state when user types */}
+                        {/* Search Input Placeholder - Translated */}
                         <input
                             type="text"
-                            placeholder="Enter a city or location"
+                            placeholder={t('searchPlaceholder')}
                             value={searchInput}
                             onChange={(e) => setSearchInput(e.target.value)}
                             id="location-input"
@@ -110,24 +129,24 @@ function Home() {
                             name="search"
                             required
                         />
-                        {/* onClick event to Action Button */}
+                        {/* Search Button - Translated (Action Button) */}
                         <button onClick={handleSearchClick} id="search-btn" 
                             className="search-button" type="button" >
-                            Search
+                            {t('searchBtn')}
                         </button>
                     </div>
                 </div>
             </main>
 
             <footer className="libre-franklin-700">
-                © 2026 Pet Map |
+                {t('footerMap')}
                 <img className="github" src={gitHub} alt="GitHub" />
-                <a href="https://github.com/asunbird/Animal-shelters-Locator-Frontend" target="_blank" >
+                <a href="https://github.com/asunbird/Animal-shelters-Locator-Frontend" target="_blank" rel="noreferrer">
                     GitHub
                 </a>
                  |
                 <div className="nav-links libre-franklin-700">
-                    <Link to="/about">About</Link>
+                    <Link to="/about">{t('about')}</Link>
                 </div>
             </footer>
         </section>
