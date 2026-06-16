@@ -20,9 +20,11 @@ function SignIn() {
                     <button type="submit" id="submit-btn" >
                         <Link to="/">Submit</Link>
                     </button>
+                    {/*
                     <div>Don't Remember Your Password?</div>
                     <input type="email" placeholder="Email Address" />
                     <button type="button">Reset Password</button>
+                    */}
                 </form>
                 <div>Or Create an Account</div>
                 <form id="create-account-form" action="" method="">

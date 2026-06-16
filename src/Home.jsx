@@ -1,32 +1,69 @@
 import { useState } from 'react';
-import { Link, useNavigate } from "react-router-dom";
-import { Outlet } from "react-router-dom";
+import { Link, useNavigate, Outlet } from "react-router-dom";
+import { useTranslation } from 'react-i18next'; // 1. Import useTranslation
 import logoIcon from '/src/assets/Logo-PetMap.svg'; // Import icons
 import gitHub from '/src/assets/GitHub.png'; // Import icons
 import { useSaveFavorites } from './hooks/useSaveFavorites';
 
 
 // Home component with header, main content, and footer
-export function Home() {
-    // 1. Track what the user types
+function Home() {
+    // Initialize translation hook
+    const { t, i18n } = useTranslation();
+
+    // Track what the user types
     const [searchInput, setSearchInput] = useState('');
   
-    // 2. Initialize the navigate function
+    // Initialize the navigate function
     const navigate = useNavigate();
 
     // Grab favorites from the custom hook
     const { favorites } = useSaveFavorites();
 
-    // 3. Create the onClick handler
+    // Create the onClick handler
     const handleSearchClick = () => {
         if (!searchInput.trim()) return; // Prevent searching if the input is empty
+
+        // Passing the search input to the map.
         // Navigate to the map page AND pass the search the search input in the background
-        navigate('/map', { state: { requestedLocation: searchInput } }); 
+        // If backend needs to know the language of the search, you can pass i18n.language here too.
+        navigate('/map', { 
+            state: { 
+                requestedLocation: searchInput,
+                searchLanguage: i18n.language // Added language context for the search function
+             } 
+            }); 
     };
 
     const handlerFavoritesHomeClick = () => {
         navigate('/favorites');
     };
+
+        {/*
+        // Track selected language
+        const [userLanguage, setUserLanguage] = useState('ES');
+        */}
+
+        // Update the language toggle handler
+        const handleLangToggle = (e) => {
+            const selectedLanguage = e.target.value.toLowerCase(); // 'es' or 'en'
+            i18n.changeLanguage(selectedLanguage);
+            // console.log(`User language changed to: ${selectedLanguage.toUpperCase()}`);
+        };
+            {/*
+            setUserLanguage(selectedLanguage);
+
+            if (selectedLanguage === "ES") {
+                console.log(`User language changed to: ${selectedLanguage}`); 
+            } else if (selectedLanguage === "EN") {
+                console.log(`User language changed to: ${selectedLanguage}`);
+            } else {
+                console.log("Error: Capture changes.");
+            }
+            */}
+        
+            // Derived state for the toggle visual dot
+            const isEnglish = i18n.resolvedLanguage?.startsWith('en');
 
 
     return (
@@ -35,43 +72,42 @@ export function Home() {
                 <div>
                     <img className="logo-icon" src={logoIcon} alt="Pet Map Logo" />
                 </div>
-                {/* Level Bage */}  
+                {/* Level Badge - Translated */}  
                 <div id="level" className="level-badge">
-                    <span>Level 1</span>
+                    <span>{t('level')}</span>
                     <div className="level-progress-bar">
                         <div className="progress-fill" style={{ width: '50%' }}></div>
                     </div>
                 </div>
+
                 {/* Language Switcher ES-EN */}
                 <div id="lang" className="lang-switch-container">
-                    <div id="lang-ES-btn" className="jost-700">ES</div>
+                    <button onClick={handleLangToggle} id="lang-ES-btn" className="lang-btns" value="ES">ES</button>
                     <div className="lang-toggle-btn">
-                        <div className="lang-toggle-point"></div>
+                        <div className={`lang-toggle-point ${isEnglish ? "float-r" : "float-l"}`}></div>
                     </div>
-                    <div id="lang-EN-btn" className=" jost-700">EN</div>
+                    <button onClick={handleLangToggle} id="lang-EN-btn" className="lang-btns" value="EN">EN</button>
                 </div>
 
                 <nav className="nav-links jost-700"> 
                     <Link id="autorisation" to="/signin">
-                        Sign in
-                    </Link>
-                     <Link id="profile-settings-link" to="profilesettings">
-                        Profile Settings
+                        {t('signIn')}
                     </Link>
                     <Outlet/>
                 </nav>    
 
-                {/* Favorites buton */}
+                {/* Favorites button - Translated */}
                 <div className="fav-container flex-row">
-                    <button className="nav-sections" id="favorites" style={{ textDecoration: 'none' }}
+                    <button id="favorites" style={{ textDecoration: 'none' }}
+                        className="search-button nav-sections"
                         onClick={handlerFavoritesHomeClick} 
-                        className="search-button" type="button" 
+                        type="button" 
                         >
                             <div id="favorites-btn" >
                                 <p id="favorites-count" className="icon-text libre-franklin-700">{favorites.length}</p>
                             </div>
                             <p className="libre-franklin-700" >
-                            Favorites
+                                {t('favorites')}
                             </p>
                     </button>
                 </div>
@@ -79,13 +115,13 @@ export function Home() {
             </header>
             <main>
                 <div className="home-content">
-                    <h2 className="jost-700">FIND THE ANIMAL SHELTER NEAR YOU</h2>
+                    {/* Heading - Translated */}
+                    <h2 className="jost-700">{t('heading')}</h2>
                     <div className="search-bar-container">
-
-                        {/* Updates a state when user types */}
+                        {/* Search Input Placeholder - Translated */}
                         <input
                             type="text"
-                            placeholder="Enter a city or location"
+                            placeholder={t('searchPlaceholder')}
                             value={searchInput}
                             onChange={(e) => setSearchInput(e.target.value)}
                             id="location-input"
@@ -93,59 +129,30 @@ export function Home() {
                             name="search"
                             required
                         />
-                        {/* onClick event to Action Button */}
+                        {/* Search Button - Translated (Action Button) */}
                         <button onClick={handleSearchClick} id="search-btn" 
                             className="search-button" type="button" >
-                            Search
+                            {t('searchBtn')}
                         </button>
                     </div>
                 </div>
             </main>
 
             <footer className="libre-franklin-700">
-                © 2026 Pet Map |
+                {t('footerMap')}
                 <img className="github" src={gitHub} alt="GitHub" />
-                <a href="https://github.com/asunbird/Animal-shelters-Locator-Frontend" target="_blank" >
+                <a href="https://github.com/asunbird/Animal-shelters-Locator-Frontend" target="_blank" rel="noreferrer">
                     GitHub
                 </a>
                  |
                 <div className="nav-links libre-franklin-700">
-                    <Link to="/about">About</Link>
+                    <Link to="/about">{t('about')}</Link>
                 </div>
             </footer>
         </section>
     );
 }
 
-export function ProfileSettings() {
-    return (
-        <section id="profile-settings">
-            <div id="prof-settings-container">
-                <form id="user-contacts" action="">
-                    <div>Personal contacts data</div>
-                    <input type="text" placeholder="Username" /><br/>
-                    <input type="password" placeholder="Password" /><br/>
-                    <button type="submit" id="submit-btn" >
-                        Save Changes
-                    </button><br/>
-                    <input type="email" placeholder="Email Address" /><br/>
-                    <button type="button">Reset Password</button>
-                </form><br/>
-                <div id="favorites-settings">
-                    <div id="level-settings" className="libre-franklin-700">Favorites list Settings</div>
-                    <button type="button">Share Favorites list</button>
-                </div><br/>
-                <div id="level-settings" className="libre-franklin-700">Level Settings</div><br/>
-                 <button className="libre-franklin-700" type="button">
-                    <Link to="/">Close X</Link>   
-                </button>
-            </div>
-        </section>
-    )
-}
 
-
-const HomeCmponents =()=>{
-}
-export default HomeCmponents;
+export default Home;
 
