@@ -6,5 +6,47 @@
   "searchPlaceholder": "Introduce una ciudad o ubicación",
   "searchBtn": "Buscar",
   "footerMap": "© 2026 Pet Map |",
-  "about": "Sobre nosotros"
+  "about": "Sobre nosotros",
+
+  "error404": "404 Página no encontrada",
+
+  "backToMap": "Volver al mapa",
+  "favoritesList": "Lista de favoritos",
+  "noFavorites": "Aún no hay favoritos guardados.",
+  "unknownShelter": "Refugio desconocido",
+  "noAddress": "Sin dirección proporcionada",
+  "hours": "Horario",
+  "website": "Sitio web",
+  "call": "Llamar",
+
+  "sharingNotSupported": "Este navegador no soporta la función de compartir.",
+  "share": "Compartir",
+
+  "phone": "Teléfono",
+  "email": "Correo electrónico",
+
+  "mapNotReady": "El mapa no está listo. Por favor, espera un momento e inténtalo de nuevo.",
+  "noCenterCoordinates": "No se pudieron determinar las coordenadas centrales del mapa.",
+  "noCoordinates": "No se pudieron determinar las coordenadas para esta ubicación.",
+  "locationNotFound": "¡Ubicación no encontrada!",
+  "searchFailed": "La búsqueda falló.",
+  "searchCityPlaceholder": "Buscar ciudad (ej. Londres)",
+  "goBtn": "Ir",
+  "searchInAreaTitle": "Buscar en esta área",
+  "searchingStatus": "Buscando...",
+  "searchThisAreaBtn": "Buscar en esta área",
+  "zoomIn": "Acercar",
+  "zoomOut": "Alejar",
+  "noSheltersFound": "No se encontraron refugios en esta área (radio de 30km)",
+
+
+  "signInTitle": "Iniciar sesión",
+  "username": "Usuario",
+  "password": "Contraseña",
+  "submit": "Enviar",
+  "createAccountTitle": "O crear una cuenta",
+  "create": "Crear",
+  "forgotPassword": "¿No recuerdas tu contraseña?",
+  "emailAddress": "Dirección de correo electrónico",
+  "resetPassword": "Restablecer contraseña"
 }

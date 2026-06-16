@@ -1,8 +1,13 @@
+import { useTranslation } from 'react-i18next'; // Import useTranslation
+
 // Rendering Contacts card
 export default function ShelterCard({ shelter, onCardClick, isFavorite, onToggleFavorite, isActive }) {
+  // Initialize translation hook
+  const { t } = useTranslation();
+  
   const tags = shelter.tags || {};
-  const name = tags.name || 'Unknown Shelter';
-  const address = [tags['addr:housenumber'], tags['addr:street'], tags['addr:city']].filter(Boolean).join(' ') || 'No address provided';
+  const name = tags.name || t('unknownShelter');
+  const address = [tags['addr:housenumber'], tags['addr:street'], tags['addr:city']].filter(Boolean).join(' ') || t('noAddress');
   const phone = tags['contact:phone'] || tags.phone;
   const website = tags['contact:website'] || tags.website;
   const email = tags['contact:email'] || tags.email;
@@ -19,7 +24,7 @@ export default function ShelterCard({ shelter, onCardClick, isFavorite, onToggle
         if (error.name !== 'AbortError') console.error("Error sharing:", error);
       }
     } else {
-      alert("Sharing is not supported on this browser.");
+      alert(t('sharingNotSupported'));
     }
   };
 
@@ -83,7 +88,7 @@ export default function ShelterCard({ shelter, onCardClick, isFavorite, onToggle
                 style={actionBtnStyle}
                 onClick={(e) => e.stopPropagation()} 
               >
-                📞 Call
+                📞 {t('call')}
               </a>
             )}
 
@@ -106,7 +111,7 @@ export default function ShelterCard({ shelter, onCardClick, isFavorite, onToggle
                 handleShare();
               }}
             >
-              ↗ Share
+              ↗ {t('share')}
             </button>
           </div>
 
@@ -114,7 +119,7 @@ export default function ShelterCard({ shelter, onCardClick, isFavorite, onToggle
           <div className="card-contacts">
             { website && (
               <div className="contact-item">
-                <strong>Website:</strong>{' '}
+                <strong>{t('website')}:</strong>{' '}
                 <a href={website.startsWith('http') ? website : `https://${website}`} target="_blank" rel="noopener noreferrer">
                   {website}
                 </a>
@@ -122,12 +127,12 @@ export default function ShelterCard({ shelter, onCardClick, isFavorite, onToggle
             )}
             { phone && (
               <div className="contact-item">
-                <strong>Phone:</strong> <a href={`tel:${phone}`}>{phone}</a>
+                <strong>{t('phone')}:</strong> <a href={`tel:${phone}`}>{phone}</a>
               </div>
             )}
             { email && (
               <div className="contact-item">
-                <strong>Email:</strong>{' '}
+                <strong>{t('email')}:</strong>{' '}
                 <form action={`mailto:${email}`} method="POST" encType="text/plain" style={{ display: 'inline' }}>
                   <button type="submit" className="email-link-btn">
                     {email}
@@ -137,7 +142,7 @@ export default function ShelterCard({ shelter, onCardClick, isFavorite, onToggle
             )}
             {tags.opening_hours && (
               <div className="contact-item">
-                <strong>Hours:</strong> {tags.opening_hours}
+                <strong>{t('hours')}:</strong> {tags.opening_hours}
               </div>
             )}
           </div>
