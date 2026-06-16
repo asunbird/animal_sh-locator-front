@@ -5,8 +5,9 @@ import { About, Info, Contact } from './About.jsx';
 import Error from  './Error.jsx';
 import SignIn from  './SignIn.jsx';
 import EvolvingBackground from './EvolvingBackground.jsx';
-import Favorites from './Favorites.jsx'
-import { Home } from './Home.jsx'
+import Favorites from './Favorites.jsx';
+import Home from './Home.jsx';
+
 
 
 

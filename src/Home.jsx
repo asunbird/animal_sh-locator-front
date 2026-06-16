@@ -5,6 +5,7 @@ import logoIcon from '/src/assets/Logo-PetMap.svg'; // Import icons
 import gitHub from '/src/assets/GitHub.png'; // Import icons
 import { useSaveFavorites } from './hooks/useSaveFavorites';
 
+
 // Home component with header, main content, and footer
 function Home() {
     // 1. Track what the user types
@@ -28,6 +29,25 @@ function Home() {
     };
 
 
+
+        // Track selected language
+        const [userLanguage, setUserLanguage] = useState('ES');
+
+        const handleLangToggle = (e) => {
+            const selectedLanguage = e.target.value;
+            setUserLanguage(selectedLanguage);
+
+            if (selectedLanguage === "ES") {
+                console.log(`User language changed to: ${selectedLanguage}`); 
+            } else if (selectedLanguage === "EN") {
+                console.log(`User language changed to: ${selectedLanguage}`);
+            } else {
+                console.log("Error: Capture changes.");
+            }
+        }
+            
+
+
     return (
         <section id="home">
             <header>
@@ -42,20 +62,18 @@ function Home() {
                     </div>
                 </div>
                 {/* Language Switcher ES-EN */}
+
                 <div id="lang" className="lang-switch-container">
-                    <div id="lang-ES-btn" className="jost-700">ES</div>
+                    <button onClick={handleLangToggle} id="lang-ES-btn" className="lang-btns" value="ES">ES</button>
                     <div className="lang-toggle-btn">
-                        <div className="lang-toggle-point"></div>
+                        <div className={`lang-toggle-point ${userLanguage === "EN" ? "float-r" : "float-l"}`}></div>
                     </div>
-                    <div id="lang-EN-btn" className=" jost-700">EN</div>
+                    <button onClick={handleLangToggle} id="lang-EN-btn" className="lang-btns" value="EN">EN</button>
                 </div>
 
                 <nav className="nav-links jost-700"> 
                     <Link id="autorisation" to="/signin">
                         Sign in
-                    </Link>
-                     <Link id="profile-settings-link" to="profilesettings">
-                        Profile Settings
                     </Link>
                     <Outlet/>
                 </nav>    

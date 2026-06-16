@@ -233,6 +233,7 @@ header {
   background: #F2EFEB;
   border-radius: 18px;
   display: flex;
+  justify-content: center; /* or use margin-auto */
   align-items: center;
   border: 2px solid var(--black);
   padding: 0;
@@ -240,15 +241,47 @@ header {
   
 }
 .lang-switch-container .lang-toggle-btn .lang-toggle-point {
-  width: 24px;
-  height: 24px;
+  box-sizing: border-box;
+  width: 28px;
+  height: 28px;
   background: var(--bg-cyan-blue);
   border: 2px solid var(--black);
   margin: 0;
   border-radius: 18px;
-  float: left;
-  transition: all 0.2s;
+  transition: transform 0.3s ease;
 }
+.lang-toggle-point.float-r {
+    transform: translateX(14px); /* or however much you want */
+}
+.lang-toggle-point.float-l {
+    transform: translateX(-14px);
+}
+
+.lang-btns {
+  width: fit-content;
+  border: 1px solid var(--text-muted);
+  padding: 1px 2px;
+  border-radius: 12px;
+  text-shadow: 1px 1px 2px var(--clr-accent-shadow);
+  transition: transform 0.3s ease-in-out;
+  text-decoration: underline;
+  background-color: rgba(255, 255, 255, 0);
+
+  font-family: "Jost", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 700;
+  font-style: normal;
+  font-size: 16px;
+}
+.lang-btns:hover {
+    transform: scale(1.05);
+    color: black;
+}
+.lang-btns:active {
+    transform: scale(0.95);
+    color: black;
+}
+
 #lang-ES-btn, #lang-EN-btn {
   width: 36px;
   height: 36px;
@@ -291,6 +324,7 @@ header {
   font-size: 1.4rem;
   text-shadow: 1px 1px 2px var(--clr-accent-shadow);
 }
+
 #autorisation {
   width: fit-content;
   text-decoration: none;
