@@ -5,9 +5,8 @@ import logoIcon from '/src/assets/Logo-PetMap.svg'; // Import icons
 import gitHub from '/src/assets/GitHub.png'; // Import icons
 import { useSaveFavorites } from './hooks/useSaveFavorites';
 
-
 // Home component with header, main content, and footer
-export function Home() {
+function Home() {
     // 1. Track what the user types
     const [searchInput, setSearchInput] = useState('');
   
@@ -117,35 +116,6 @@ export function Home() {
     );
 }
 
-export function ProfileSettings() {
-    return (
-        <section id="profile-settings">
-            <div id="prof-settings-container">
-                <form id="user-contacts" action="">
-                    <div>Personal contacts data</div>
-                    <input type="text" placeholder="Username" /><br/>
-                    <input type="password" placeholder="Password" /><br/>
-                    <button type="submit" id="submit-btn" >
-                        Save Changes
-                    </button><br/>
-                    <input type="email" placeholder="Email Address" /><br/>
-                    <button type="button">Reset Password</button>
-                </form><br/>
-                <div id="favorites-settings">
-                    <div id="level-settings" className="libre-franklin-700">Favorites list Settings</div>
-                    <button type="button">Share Favorites list</button>
-                </div><br/>
-                <div id="level-settings" className="libre-franklin-700">Level Settings</div><br/>
-                 <button className="libre-franklin-700" type="button">
-                    <Link to="/">Close X</Link>   
-                </button>
-            </div>
-        </section>
-    )
-}
 
-
-const HomeCmponents =()=>{
-}
-export default HomeCmponents;
+export default Home;
 
