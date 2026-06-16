@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'; // <-- Added useCallback
 import { Link } from "react-router-dom";
 import logoIcon from '/src/assets/Logo-PetMap.svg'; // Import icons
+import { useTranslation } from 'react-i18next'; // Import useTranslation
 
 // Import the Map Container for Leaflet
 import { MapContainer, TileLayer } from 'react-leaflet'
@@ -24,6 +25,9 @@ const customPawIcon = new L.Icon({
 
 // Rendering a Map
 function Map() {
+    // Initialize translation hook
+    const { t } = useTranslation();
+
     // 1. All state variables
     const [searchQuery, setSearchQuery] = useState('');
     const [map, setMap] = useState(null); // Assuming save leaflet map instance here
@@ -87,7 +91,7 @@ function Map() {
     // Search for shelters in the current visible map area
     const searchInArea = () => {
         if (!map) {
-            alert("Map is not ready. Please wait a moment and try again.");
+            alert(t('mapNotReady'));
             return;
         }
 
@@ -98,7 +102,7 @@ function Map() {
         if (lat && lon) {
             fetchShelters(lat, lon);
         } else {
-            alert("Could not determine map center coordinates.");
+            alert(t('noCenterCoordinates'));
         }
     };
 
@@ -120,7 +124,7 @@ function Map() {
                 const lonNum = parseFloat(lon);
         
                 if (isNaN(latNum) || isNaN(lonNum)) {
-                    alert("Could not determine coordinates for this location.");
+                    alert(t('noCoordinates'));
                     return;
                 }
 
@@ -139,12 +143,12 @@ function Map() {
                 }
 
             } else {
-                alert("Location not found!");
+                alert(t('locationNotFound'));
             }
 
         } catch (err) {
             console.error(err);
-            alert("Search failed.");
+            alert(t('searchFailed'));
         } finally {
             setIsSearching(false);
         }
@@ -239,13 +243,13 @@ function Map() {
                 <form id="map-search-bar" className="search-bar-container bg-base" onSubmit={handleSearch}>
                     <input id="location-input" className="search-input"
                         type="text" 
-                        placeholder="Search city (e.g. London)" 
+                        placeholder={t('searchCityPlaceholder')} 
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                     />
                     <button id="search-btn" className="search-button" 
                         type="submit" disabled={isSearching}>
-                        {isSearching ? '...' : 'Go'}
+                        {isSearching ? '...' : t('goBtn')}
                     </button>
                 </form>
 
@@ -255,11 +259,11 @@ function Map() {
                     <button 
                         className="round-container bg-cyan-blue"
                         onClick={searchInArea}
-                        title="Search in this area"
+                        title={t('searchInAreaTitle')}
                         disabled={isLoadingShelters}
                     >
                         <p className="libre-franklin-700">
-                            {isLoadingShelters ? 'Searching...' : 'Search this area'}
+                            {isLoadingShelters ? t('searchingStatus') : t('searchThisAreaBtn')}
                         </p>
                     </button>
                 </div>
@@ -272,7 +276,7 @@ function Map() {
                             <p id="favorites-count" className="icon-text libre-franklin-700">{favorites.length}</p>
                         </div>
                         <p className="libre-franklin-700">
-                            Favorites
+                            {t('favorites')}
                         </p>
                     </Link>
                 </div> 
@@ -283,7 +287,7 @@ function Map() {
                         id="map-switcher-zoom-plus" 
                         className="round-switch-btn"
                         onClick={handleZoomIn}
-                        title="Zoom in"
+                        title={t('zoomIn')}
                     >
                         <p className="jost-700">+</p>
                     </button>
@@ -291,7 +295,7 @@ function Map() {
                         id="map-switcher-zoom-minus" 
                         className="round-switch-btn flip-vertical"
                         onClick={handleZoomOut}
-                        title="Zoom out"
+                        title={t('zoomOut')}
                     >
                         <p className="jost-700">-</p>
                     </button>
@@ -340,7 +344,7 @@ function Map() {
                 {/* Status Message for empty results */}
                 {!isLoadingShelters && hasSearched && shelters.length === 0 && (
                     <div className="status-message">
-                    No shelters found in this area (30km radius)
+                    {t('noSheltersFound')}
                     </div>
                 )}
 

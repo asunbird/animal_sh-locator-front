@@ -6,5 +6,49 @@
   "searchPlaceholder": "Enter a city or location",
   "searchBtn": "Search",
   "footerMap": "© 2026 Pet Map |",
-  "about": "About"
+  "about": "About",
+
+  "error404": "404 Not Found",
+
+  "backToMap": "Back to Map",
+  "favoritesList": "Favorites List",
+  "noFavorites": "No favorites saved yet.",
+  "unknownShelter": "Unknown Shelter",
+  "noAddress": "No address provided",
+  "hours": "Hours",
+  "website": "Website",
+  "call": "Call",
+
+  "sharingNotSupported": "Sharing is not supported on this browser.",
+  "share": "Share",
+
+  "phone": "Phone",
+  "email": "Email",
+
+
+  "mapNotReady": "Map is not ready. Please wait a moment and try again.",
+  "noCenterCoordinates": "Could not determine map center coordinates.",
+  "noCoordinates": "Could not determine coordinates for this location.",
+  "locationNotFound": "Location not found!",
+  "searchFailed": "Search failed.",
+  "searchCityPlaceholder": "Search city (e.g. London)",
+  "goBtn": "Go",
+  "searchInAreaTitle": "Search in this area",
+  "searchingStatus": "Searching...",
+  "searchThisAreaBtn": "Search this area",
+  "zoomIn": "Zoom in",
+  "zoomOut": "Zoom out",
+  "noSheltersFound": "No shelters found in this area (30km radius)",
+
+
+  "signInTitle": "Sign in",
+  "username": "Username",
+  "password": "Password",
+  "submit": "Submit",
+  "createAccountTitle": "Or Create an Account",
+  "create": "Create",
+  "forgotPassword": "Don't Remember Your Password?",
+  "emailAddress": "Email Address",
+  "resetPassword": "Reset Password"
+
 }
