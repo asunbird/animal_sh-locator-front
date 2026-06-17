@@ -1,5 +1,5 @@
 import { Navigate, Outlet } from "react-router-dom";
-import { useAuth } from "../provider/authContext.jsx";
+import { useAuth } from "../hooks/useAuth.js";
 
 // define the ProtectedRoute component, which will serve as a wrapper for authenticated routes
 export const ProtectedRoute = () => {

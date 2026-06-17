@@ -1,5 +1,5 @@
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import { useAuth } from "../provider/authContext.jsx";
+import { useAuth } from "../hooks/useAuth.js";
 import { ProtectedRoute } from "./ProtectedRoute";
 import Home from "../Home.jsx";
 import Map from "../Map.jsx";

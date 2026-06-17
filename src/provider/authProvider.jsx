@@ -1,12 +1,9 @@
 // set up the authentication context using React's context API
 
 import axios from "axios";
-import {
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
-import AuthContext from './authContext'
+import { useEffect, useMemo, useState } from "react";
+import { AuthContext } from "./authContext";
+
 
 // the provider for the authentication context.
 // It receives children as a prop, that will have access to the authentication context.
@@ -27,7 +24,8 @@ const AuthProvider = ({ children }) => {
     // and stores the token value in the local storage using localStorage.setItem()
     useEffect(() => {
     if (token) {
-        axios.defaults.headers.common["Authorization"] = "Bearer " + token;
+        axios.defaults.headers.common["Authorization"] = 
+            "Bearer " + token;
         localStorage.setItem('token',token);
     } else {
         delete axios.defaults.headers.common["Authorization"];
@@ -58,5 +56,3 @@ const AuthProvider = ({ children }) => {
 };
 
 export default AuthProvider;
-
-
