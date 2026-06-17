@@ -1,24 +1,32 @@
-/* Levels from 0 to 6 */
-/* Level-Bage Styles Home */
-span {   /* Text styles for All level bages */
+/* Responsive Spacing and Typography */
+:root {
+  --level-badge-width: clamp(80px, 20vw, 140px);
+  --level-badge-height: clamp(32px, 6vw, 48px);
+  --level-font-size: clamp(14px, 3vw, 18px);
+}
+
+/* Level-Badge Text Styles */
+span {
   display: block;
-  height: inherit; 
+  height: inherit;
   font-family: "Jost", sans-serif;
   font-optical-sizing: auto;
   font-weight: 700;
   font-style: normal;
-  font-size: 18px;
+  font-size: var(--level-font-size);
   letter-spacing: 0.5px;
 }
-.level-badge {  /* Level-Bage container Styles for All level bages */
-  width: 120px;
-  height: 40px;
+
+/* Level-Badge Container Styles */
+.level-badge {
+  width: var(--level-badge-width);
+  height: var(--level-badge-height);
   border-radius: 32px;
-  min-width: 80px;
+  min-width: 75px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 4px 28px;
+  padding: clamp(2px, 1vw, 4px) clamp(16px, 3vw, 28px);
   font-family: 'Inter', sans-serif;
   transition: all 0.3s ease;
 
@@ -148,21 +156,71 @@ span {   /* Text styles for All level bages */
 }
 
 
-  /* ........................ */
-/* Level-Up Message bage Home */
+/* Level-Up Message Badge */
 .level-up-6 {
-  width: 200px;
-  height: 56px;
+  width: clamp(150px, 50vw, 250px);
+  height: auto;
+  min-height: 48px;
   border-radius: 32px;
-  min-width: 80px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 4px 12px;
+  justify-content: center;
+  padding: clamp(6px, 2vw, 12px) clamp(12px, 3vw, 20px);
   transition: all 0.3s ease;
-
   background: rgba(255, 255, 255, 0.4);
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  margin: 20px 0;
-  font-size: 20px;
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  margin: clamp(12px, 2vw, 24px) 0;
+  font-size: clamp(16px, 3vw, 20px);
+  font-weight: 700;
+}
+
+/* Responsive Media Queries for Level Badges */
+@media (max-width: 479px) {
+  .level-badge {
+    width: clamp(70px, 18vw, 95px);
+    height: clamp(28px, 5vw, 36px);
+  }
+
+  span {
+    font-size: clamp(12px, 2.5vw, 14px);
+  }
+
+  .level-up-6 {
+    width: 90%;
+    max-width: 180px;
+  }
+}
+
+@media (min-width: 480px) and (max-width: 767px) {
+  .level-badge {
+    width: clamp(80px, 18vw, 110px);
+    height: clamp(32px, 5.5vw, 40px);
+  }
+
+  span {
+    font-size: clamp(13px, 2.5vw, 16px);
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .level-badge {
+    width: clamp(100px, 18vw, 130px);
+    height: clamp(36px, 5vw, 44px);
+  }
+
+  span {
+    font-size: clamp(14px, 2.5vw, 17px);
+  }
+}
+
+@media (min-width: 1024px) {
+  .level-badge {
+    width: 120px;
+    height: 40px;
+  }
+
+  span {
+    font-size: 18px;
+  }
 }
