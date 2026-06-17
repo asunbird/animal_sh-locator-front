@@ -38,11 +38,11 @@ const AuthProvider = ({ children }) => {
     // Create the memoized context value using useMemo()
     // The token value is used as a dependency for memoization
     const contextValue = useMemo(
-    () => ({
-        token,
-        setToken,
-    }),
-    [token]
+        () => ({
+            token,
+            setToken,
+        }),
+        [token]
     );
 
     // Provide the authentication context to the child components. 

@@ -8,6 +8,9 @@ import { useSaveFavorites } from './hooks/useSaveFavorites';
 
 // Home component with header, main content, and footer
 function Home() {
+    // get tocken from local storge
+    console.log("Token from localStorage:", localStorage.getItem("token"));
+
     // Initialize translation hook
     const { t, i18n } = useTranslation();
 
@@ -90,7 +93,7 @@ function Home() {
                 </div>
 
                 <nav className="nav-links jost-700"> 
-                    <Link id="autorisation" to="/signin">
+                    <Link id="autorisation" to="/components/signin">
                         {t('signIn')}
                     </Link>
                     <Outlet/>

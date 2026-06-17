@@ -5,7 +5,9 @@ import Home from "../Home.jsx";
 import Map from "../Map.jsx";
 import { About, Info, Contact } from "../About.jsx";
 import Error from "../Error.jsx";
-import SignIn from "../SignIn.jsx";
+import SignIn from "../components/SignIn.jsx";
+import SignOut from "../components/SignOut.jsx";
+import Registration from "../components/Registration.jsx";
 import Favorites from "../Favorites.jsx";
 
 // This functional component acts as the entry point for configuring the application routes.
@@ -20,8 +22,12 @@ export const AppRoutes = () => {
             element: <Home />,
         },
         {
-            path: "/signin",
+            path: "/components/signin",
             element: <SignIn />,
+        },
+        {
+            path: "/components/registration",
+            element: <Registration />,
         },
         {
             path: "/favorites",
@@ -62,19 +68,20 @@ export const AppRoutes = () => {
                 element: <div>User Home Page</div>,
             },
             {
-                path: "/profile",
-                element: <div>User Profile</div>,
-            },
-            {
-                path: "/logout",
-                element: <div>Logout</div>,
+                path: "/components/signout",
+                element: <SignOut />,
             },
             ],
         },
     ];
 
     // Define routes accessible only to non-authenticated users.
-    const routesForNotAuthenticatedOnly = [];
+    const routesForNotAuthenticatedOnly = [
+        {
+            path: "/components/signin",
+            element: <SignIn />,
+        },
+    ];
 
 
     // Combine and conditionally include routes based on authentication status.

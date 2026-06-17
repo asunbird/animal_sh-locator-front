@@ -48,5 +48,6 @@
   "create": "Crear",
   "forgotPassword": "¿No recuerdas tu contraseña?",
   "emailAddress": "Dirección de correo electrónico",
-  "resetPassword": "Restablecer contraseña"
+  "resetPassword": "Restablecer contraseña",
+  "registration": "Registro"
 }
