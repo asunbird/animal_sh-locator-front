@@ -49,6 +49,6 @@
   "create": "Create",
   "forgotPassword": "Don't Remember Your Password?",
   "emailAddress": "Email Address",
-  "resetPassword": "Reset Password"
-
+  "resetPassword": "Reset Password",
+  "registration": "Registration"
 }
