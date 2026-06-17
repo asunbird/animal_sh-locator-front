@@ -16,13 +16,14 @@ const LEVEL_THRESHOLDS = [
 // level timer for testing
 // Each level increments by 60000ms (1 minute), cumulative
 const test_timer = [
-    0,                  // Level 0: 0 min
-  1 * 60 * 1000,       // Level 1: 1 min cumulative
-  2 * 60 * 1000,       // Level 2: 2 min cumulative
-  3 * 60 * 1000,       // Level 3: 3 min cumulative
-  4 * 60 * 1000,       // Level 4: 4 min cumulative
-  5 * 60 * 1000,       // Level 5: 5 min cumulative
-  7 * 60 * 1000,       // Level 6: 7 min cumulative
+    0,                  // Level 0: 1 min
+  1 * 60 * 1000,       // Level 1: 2 min cumulative
+  2 * 60 * 1000,       // Level 2: 3 min cumulative
+  3 * 60 * 1000,       // Level 3: 4 min cumulative
+  4 * 60 * 1000,       // Level 4: 5 min cumulative
+  5 * 60 * 1000,       // Level 5: 6 min cumulative
+  6 * 60 * 1000,
+  7 * 60 * 1000,      // Level 6: 7 min cumulative
 ];
 
 // Total cycle time: 7 minutes (then resets)

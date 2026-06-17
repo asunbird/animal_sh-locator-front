@@ -26,17 +26,17 @@ span {   /* Text styles for All level bages */
   --l-0-color: #B9A697;
   --l-0-border-color: #EFD5BE;
 
-  --l-1-color: #4FAA55;
-  --l-1-border-color: #8CBF8A;
-  --l-1-text-color: #2F7C34;
+  --l-1-color: #569F97;
+  --l-1-border-color: #569F97;
+  --l-1-text-color: #569F97;
 
   --l-2-color: #2383F3;
   --l-2-border-color: #2383F3;
   --l-2-text-color: #1551B5;
 
-  --l-3-color: #569F97;
-  --l-3-border-color: #569F97;
-  --l-3-text-color: #569F97;
+  --l-3-color: #4FAA55;
+  --l-3-border-color: #8CBF8A;
+  --l-3-text-color: #2F7C34;
 
   --l-4-color: #A650BF; /* Progress fill color */
   --l-4-border-color: #A650BF;
@@ -77,7 +77,7 @@ span {   /* Text styles for All level bages */
 
 /* Level-1 colors */
 .level-badge-1 { /* Level-Bage container for level 0 */
-  background: linear-gradient(to right, #F3FFF4, #DFF3E1);
+  background: linear-gradient(to right, #D7EDE7, #B5DBD2);
   border: 2px solid var(--l-1-border-color);
 }
 .level-badge-1 span { /* Text styles for level 0 */
@@ -101,7 +101,7 @@ span {   /* Text styles for All level bages */
 
 /* Level-3 colors */
 .level-badge-3 { /* Level-Bage container for level 0 */
-  background: linear-gradient(to right, #D7EDE7, #B5DBD2);
+  background: linear-gradient(to right, #F3FFF4, #DFF3E1);
   border: 2px solid var(--l-3-border-color);
 }
 .level-badge-3 span { /* Text styles for level 0 */
