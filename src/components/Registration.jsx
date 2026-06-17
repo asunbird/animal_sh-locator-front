@@ -1,9 +1,14 @@
-import { useTranslation } from 'react-i18next'; // Import useTranslation
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
 import { useForm } from "react-hook-form";
+import { register as registerUser } from "../services/authService";
 
 function Register() {
-    // Initialize translation hook
     const { t } = useTranslation();
+    const navigate = useNavigate();
+    const [serverError, setServerError] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
     const {
         register,
@@ -11,18 +16,16 @@ function Register() {
         formState: { errors },
     } = useForm();
 
-    const onSubmit = (data) => {
-        const existingUser = JSON.parse(localStorage.getItem(data.email));
-        if (existingUser) {
-            console.log("Email is already registered!");
-        } else {
-            const userData = {
-                name: data.name,
-                email: data.email,
-                password: data.password,
-            };
-            localStorage.setItem(data.email, JSON.stringify(userData));
-            console.log(data.name + " has been successfully registered");
+    const onSubmit = async (data) => {
+        setServerError('');
+        setIsLoading(true);
+        try {
+            await registerUser(data.name, data.email, data.password);
+            navigate("/components/signin", { replace: true });
+        } catch (error) {
+            setServerError(error.message);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -31,15 +34,17 @@ function Register() {
             <h2>Registration Form</h2>
 
             <form id="create-account-form" onSubmit={handleSubmit(onSubmit)}>
-                <input type="text" 
-                {...register("name", { required: true })}
-                placeholder={t('username')} />
+                <input
+                    type="text"
+                    {...register("name", { required: true })}
+                    placeholder={t('username')}
+                />
                 {errors.name && <span style={{ color: "red" }}>*Name* is mandatory</span>}
 
                 <input
                     type="email"
                     {...register("email", { required: true })}
-                     placeholder={t('Email')}
+                    placeholder={t('email')}
                 />
                 {errors.email && <span style={{ color: "red" }}>*Email* is mandatory</span>}
 
@@ -50,14 +55,20 @@ function Register() {
                 />
                 {errors.password && <span style={{ color: "red" }}>*Password* is mandatory</span>}
 
-                <button type="submit">{t('create')}</button>
+                {serverError && (
+                    <div style={{ color: "red" }}>{serverError}</div>
+                )}
+
+                <button type="submit" disabled={isLoading}>
+                    {isLoading ? 'Creating…' : t('create')}
+                </button>
             </form>
+
+            <Link to="/components/signin">
+                {t('signIn') || 'Already have an account? Sign in'}
+            </Link>
         </>
     );
 }
 
 export default Register;
-   
-   
-   
-   
