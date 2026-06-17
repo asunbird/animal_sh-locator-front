@@ -1,6 +1,7 @@
 {
-  "level": "Nivel 1",
+  "level": "Nivel",
   "signIn": "Iniciar sesión",
+  "signOut": "Cerrar sesión",
   "favorites": "Favoritos",
   "heading": "ENCUENTRA EL REFUGIO DE ANIMALES CERCA DE TI",
   "searchPlaceholder": "Introduce una ciudad o ubicación",

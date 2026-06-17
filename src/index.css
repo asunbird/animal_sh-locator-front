@@ -91,11 +91,7 @@ p {
   display: inline-block;
   margin: 0;
 }
-span {
-  display: block;
-  height: inherit; 
-  margin-top: 8px;
-}
+
 .float-right { float: right; }
 .float-left { float: left; }
 .flex-row {
@@ -186,38 +182,6 @@ header {
   margin: auto 20px;
 }
 
-/* Level-Bage Styles Home*/
-.level-badge {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background: rgba(255, 255, 255, 0.4);
-  padding: 4px 12px;
-  border-radius: 12px;
-  min-width: 80px;
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  font-family: 'Inter', sans-serif;
-  transition: all 0.3s ease;
-}
-.level-badge span {
-  font-size: 0.75rem;
-  font-weight: 800;
-  letter-spacing: 0.5px;
-  color: var(--text-muted);
-}
-.level-progress-bar {
-  width: 100%;
-  height: 4px;
-  background: rgba(0, 0, 0, 0.05);
-  border-radius: 2px;
-  margin-top: 4px;
-  overflow: hidden;
-}
-.progress-fill {
-  height: 100%;
-  background: var(--primary-accent);
-  transition: width 1s linear;
-}
 
 /* Language-Switch Styles Home*/
 .lang-switch-container {
@@ -324,8 +288,15 @@ header {
   font-size: 1.4rem;
   text-shadow: 1px 1px 2px var(--clr-accent-shadow);
 }
-
-#autorisation {
+#signout:hover {
+    transform: scale(1.05);
+    color: black;
+}
+#signout::active {
+    transform: scale(0.95);
+    color: black;
+}
+#autorisation, #signout {
   width: fit-content;
   text-decoration: none;
   border: 1px solid var(--text-muted);
@@ -336,6 +307,11 @@ header {
   color: var(--clr-text-main); /*  gray text color */
   font-size: 1.4rem;
   text-shadow: 1px 1px 2px var(--clr-accent-shadow);
+}
+.nav-link-btn {
+  background: none;
+  cursor: pointer;
+  font-family: inherit;
 }
 /* --------------- .................... ----------------- */
 /* -------------------------------- */

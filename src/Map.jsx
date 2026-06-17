@@ -167,65 +167,59 @@ function Map() {
         }
         setIsLoadingShelters(true);
 
+        const mirrors = [
+            'https://overpass-api.de/api/interpreter',
+            'https://overpass.karte.io/api/interpreter',
+            'https://overpass.openstreetmap.ru/api/interpreter',
+        ];
+
+        const radius = 50000; // 50km
+        const overpassQuery = `
+            [out:json][timeout:25];
+            (
+                nwr["amenity"="animal_shelter"](around:${radius},${lat},${lon});
+                nwr["tourism"="animal_boarding"](around:${radius},${lat},${lon});
+                nwr["tourism"="animal_breeding"](around:${radius},${lat},${lon});
+                nwr["animal_shelter"](around:${radius},${lat},${lon});
+            );
+            out center tags;
+        `;
+
         let lastError = null;
 
-        // Small 500ms delay between retries to give the next mirror a clean start
-        if (lastError) await new Promise(resolve => setTimeout(resolve, 500));
-      
-        try {
-            const radius = 50000; // 50km
-            const overpassQuery = `
-                [out:json][timeout:25];
-                (
-                    nwr["amenity"="animal_shelter"](around:${radius},${lat},${lon});
-                    nwr["tourism"="animal_boarding"](around:${radius},${lat},${lon});
-                    nwr["tourism"="animal_breeding"](around:${radius},${lat},${lon});
-                    nwr["animal_shelter"](around:${radius},${lat},${lon});
-                );
-                out center tags;
-            `;
-             // Ensure 'center' is specified here
-            // nwr["amenity"="veterinary"](around:${radius},${lat},${lon});
+        for (const mirror of mirrors) {
+            try {
+                const response = await fetch(mirror, {
+                    method: 'POST',
+                    body: `data=${encodeURIComponent(overpassQuery)}`
+                });
 
-            const response = await fetch("https://overpass-api.de/api/interpreter", {
-                method: 'POST',
-                mode: 'no-cors',
-                body: `data=${encodeURIComponent(overpassQuery)}`
-            });
+                if (!response.ok) {
+                    throw new Error(`Status ${response.status}`);
+                }
 
-            if (!response.ok) {
-                throw new Error(`Status ${response.status}`);
+                const data = await response.json();
+                const elements = data.elements || [];
+
+                if (elements.length === 0) {
+                    console.warn(`No shelters found near ${lat}, ${lon} within 50km`);
+                }
+
+                setShelters(elements);
+                setIsLoadingShelters(false);
+                return;
+
+            } catch (err) {
+                console.warn(`Mirror ${mirror} failed, trying next...:`, err.message);
+                lastError = err;
+                await new Promise(resolve => setTimeout(resolve, 500));
             }
-
-            const data = await response.json();
-            // Log full response and element count for every request
-            console.log(data);
-            console.log((data.elements || []).length);
-            const elements = data.elements || [];
-               
-            if (elements.length === 0) {
-                console.warn(`No shelters found near ${lat}, ${lon} within 30km`);
-            }
-
-            setShelters(elements);
-            console.log("Shelters found:", elements.length);
-            console.log(elements);
-
-            setIsLoadingShelters(false);
-            return; 
-
-        } catch (err) {
-            console.warn(`Mirror failed, trying next...:`, err.message);
-            lastError = err;
         }
- 
 
         setIsLoadingShelters(false);
-        if (lastError) {
-           console.log("All Overpass servers are currently struggling due to high traffic. Please try again in about 1 minute.");
-        }
+        console.warn("All Overpass servers are currently unavailable. Please try again in about 1 minute.", lastError);
 
-    }, [map]); // <-- Add a dependency array
+    }, [map]);
 
      // Calling location search hook
      // Outside of all callbacks, at the main level of the Map component!

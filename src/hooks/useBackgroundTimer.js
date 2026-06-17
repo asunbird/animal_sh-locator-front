@@ -30,6 +30,7 @@ const TOTAL_CYCLE_TIME = test_timer[test_timer.length - 1];
 
 export const useBackgroundTimer = () => {
   const [level, setLevel] = useState(0);
+  const [levelProgress, setLevelProgress] = useState(0);
 
   // useRef keeps track of mutable values without triggering re-renders
   const accumulatedTimeRef = useRef(0);
@@ -56,7 +57,7 @@ export const useBackgroundTimer = () => {
         // 3. Determine the current level with cycling
         // Use modulo to cycle through levels (resets after reaching max)
         const cycleTime = accumulatedTimeRef.current % TOTAL_CYCLE_TIME;
-        
+
         let currentLevel = 0;
         for (let i = test_timer.length - 1; i >= 0; i--) {
           if (cycleTime >= test_timer[i]) {
@@ -65,17 +66,25 @@ export const useBackgroundTimer = () => {
           }
         }
 
-         // Update state (React batches this, so it only re-renders if level changes)
-         setLevel(currentLevel);
+        // 4. Calculate progress within the current level (0–100)
+        const levelStart = test_timer[currentLevel];
+        const levelEnd = currentLevel < test_timer.length - 1
+          ? test_timer[currentLevel + 1]
+          : TOTAL_CYCLE_TIME;
+        const progress = Math.min(100, Math.round(((cycleTime - levelStart) / (levelEnd - levelStart)) * 100));
+
+        // Update state (React batches this, so it only re-renders if values change)
+        setLevel(currentLevel);
+        setLevelProgress(progress);
       }
 
       // Check again in 1 second
-      timeoutId = setTimeout(tick, 1000); 
+      timeoutId = setTimeout(tick, 1000);
     };
 
     tick();
 
-    // 4. Handle edge cases when the user switches tabs and comes back
+    // 5. Handle edge cases when the user switches tabs and comes back
     const handleVisibilityChange = () => {
       if (!document.hidden) {
         // When they return, reset the clock so we don't count the time they were gone
@@ -91,5 +100,5 @@ export const useBackgroundTimer = () => {
     };
   }, []);
 
-  return level;
+  return { level, levelProgress };
 };

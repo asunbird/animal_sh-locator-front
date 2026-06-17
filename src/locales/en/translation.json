@@ -1,6 +1,7 @@
 {
-  "level": "Level 1",
+  "level": "Level",
   "signIn": "Sign in",
+  "signOut": "Sign Out",
   "favorites": "Favorites",
   "heading": "FIND THE ANIMAL SHELTER NEAR YOU",
   "searchPlaceholder": "Enter a city or location",
