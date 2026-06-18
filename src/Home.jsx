@@ -229,7 +229,7 @@ function Home() {
                 {t('footerMap')}
                 <img className="github" src={gitHub} alt="GitHub" />
                 <a href="https://github.com/asunbird/Animal-shelters-Locator-Frontend" target="_blank" rel="noreferrer">
-                    GitHub
+                    GitHub 
                 </a>
                  |
                 <div className="nav-links libre-franklin-700">
