@@ -3,6 +3,7 @@ import { Link, useNavigate, Outlet } from "react-router-dom";
 import { useTranslation } from 'react-i18next'; // 1. Import useTranslation
 import { changeLanguageAndSave } from './i18n'; // Import language change helper
 import logoIcon from '/src/assets/Logo-PetMap.svg'; // Import icons
+
 import gitHub from '/src/assets/GitHub.png'; // Import icons
 import { useSaveFavorites } from './hooks/useSaveFavorites';
 import { useAuth } from './hooks/useAuth';
@@ -225,14 +226,14 @@ function Home() {
 
             </main>
 
-            <footer className="libre-franklin-700">
+            <footer className="libre-franklin-700 flex-row">
                 {t('footerMap')}
                 <img className="github" src={gitHub} alt="GitHub" />
                 <a href="https://github.com/asunbird/Animal-shelters-Locator-Frontend" target="_blank" rel="noreferrer">
                     GitHub 
                 </a>
                  |
-                <div className="nav-links libre-franklin-700">
+                <div className="nav-links libre-franklin-700 flex-row" >
                     <Link to="/about">{t('about')}</Link>
                 </div>
             </footer>
