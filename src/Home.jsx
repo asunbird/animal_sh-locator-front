@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate, Outlet } from "react-router-dom";
 import { useTranslation } from 'react-i18next'; // 1. Import useTranslation
+import { changeLanguageAndSave } from './i18n'; // Import language change helper
 import logoIcon from '/src/assets/Logo-PetMap.svg'; // Import icons
 import gitHub from '/src/assets/GitHub.png'; // Import icons
 import { useSaveFavorites } from './hooks/useSaveFavorites';
@@ -62,8 +63,8 @@ function Home() {
         // Update the language toggle handler
         const handleLangToggle = (e) => {
             const selectedLanguage = e.target.value.toLowerCase(); // 'es' or 'en'
-            i18n.changeLanguage(selectedLanguage);
-            // console.log(`User language changed to: ${selectedLanguage.toUpperCase()}`);
+            changeLanguageAndSave(selectedLanguage);
+            console.log(`User language changed to: ${selectedLanguage.toUpperCase()}`);
         };
             {/*
             setUserLanguage(selectedLanguage);
