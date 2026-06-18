@@ -15,8 +15,12 @@ export const useSaveFavorites = () => {
       if (token) {
         try {
           setIsLoading(true);
-          const data = await fetchUserFavorites();
-          setFavorites(data.favorites || []);
+          const data = await fetchUserFavorites(token);
+          console.log('[useSaveFavorites] Received from backend:', data);
+
+          const favArray = data.items || data.favorites || [];
+          console.log('[useSaveFavorites] Setting favorites array:', favArray);
+          setFavorites(favArray);
         } catch (error) {
           console.error('Failed to load favorites from backend:', error);
           const saved = localStorage.getItem('paws_favorites');
@@ -37,25 +41,39 @@ export const useSaveFavorites = () => {
   }, [favorites, token]);
 
   const toggleFavorite = async (shelter) => {
+    const shelterId = shelter.id || shelter._id;
+    console.log('[toggleFavorite] Toggling shelter:', shelterId);
+
     setFavorites((prev) => {
-      const isFav = prev.some((f) => f.id === shelter.id);
+      const isFav = prev.some((f) => (f.id || f._id) === shelterId);
       if (isFav) {
-        return prev.filter((f) => f.id !== shelter.id);
+        console.log('[toggleFavorite] Removing from favorites');
+        return prev.filter((f) => (f.id || f._id) !== shelterId);
       } else {
+        console.log('[toggleFavorite] Adding to favorites');
         return [...prev, shelter];
       }
     });
 
     if (token) {
       try {
-        const isFav = favorites.some((f) => f.id === shelter.id);
+        const isFav = favorites.some((f) => (f.id || f._id) === shelterId);
         if (isFav) {
-          await removeFavorite(shelter.id);
+          console.log('[toggleFavorite] Calling removeFavorite with ID:', shelterId);
+          await removeFavorite(shelterId, token);
         } else {
-          await saveFavorite(shelter);
+          console.log('[toggleFavorite] Calling saveFavorite');
+          await saveFavorite(shelter, token);
         }
       } catch (error) {
         console.error('Failed to sync favorite with backend:', error);
+        setFavorites((prev) => {
+          const stillExists = prev.some((f) => (f.id || f._id) === shelterId);
+          if (!stillExists) {
+            return prev.filter((f) => (f.id || f._id) !== shelterId);
+          }
+          return prev;
+        });
       }
     }
   };

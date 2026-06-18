@@ -29,38 +29,49 @@ function FavoritesList() {
             {favorites.length === 0 ? (
                 <div className="fav-list-card">{t('noFavorites')}</div>
             ) : (
-                favorites.map((shelter) => {
-                    const tags = shelter.tags || {};
-                    const name = tags.name || t('unknownShelter');
-                    const address = [tags['addr:housenumber'], tags['addr:street'], tags['addr:city']]
-                        .filter(Boolean)
-                        .join(' ') || t('noAddress');
+                favorites.map((favorite) => {
+                    const shelterId = favorite.id || favorite._id;
+                    const tags = favorite.tags || {};
+                    const shelter = favorite.shelter || {};
+
+                    // Handle both formats: new format (direct properties) and old format (tags)
+                    const name = favorite.name || shelter.name || tags.name || t('unknownShelter');
+                    const address = favorite.address ||
+                        ([tags['addr:housenumber'], tags['addr:street'], tags['addr:city']]
+                            .filter(Boolean)
+                            .join(' ')) ||
+                        t('noAddress');
+                    const phone = favorite.phone || shelter.phone || tags.phone;
+                    const website = favorite.website || shelter.website || tags.website;
+                    const hours = favorite.hours || shelter.hours || tags.opening_hours;
+
+                    console.log('[Favorites] Displaying:', { name, address, phone, website, hours });
 
                     return (
-                        <div key={shelter.id} className="fav-list-card">
+                        <div key={shelterId} className="fav-list-card">
                             <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', gap: '12px' }}>
                                 <div>
                                     <h3>{name}</h3>
-                                    
+
                                 </div>
-                                <button className="heart-btn is-fav" onClick={() => toggleFavorite(shelter)}>
+                                <button className="heart-btn is-fav" onClick={() => toggleFavorite(favorite)}>
                                     ✕
                                 </button>
                             </div>
                             <p style={{ margin: '8px 0', color: '#666' }}>{address}</p>
-                            {tags.opening_hours && (
+                            {hours && (
                                 <p style={{ margin: '4px 0', fontSize: '0.95rem' }}>
-                                    <strong>{t('hours')}:</strong> {tags.opening_hours}
+                                    <strong>{t('hours')}:</strong> {hours}
                                 </p>
                             )}
                             <div style={{ marginTop: '8px', display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-                                {tags.website && (
-                                    <a href={tags.website.startsWith('http') ? tags.website : `https://${tags.website}`} target="_blank" rel="noopener noreferrer">
+                                {website && (
+                                    <a href={website.startsWith('http') ? website : `https://${website}`} target="_blank" rel="noopener noreferrer">
                                         {t('website')}
                                     </a>
                                 )}
-                                {tags.phone && (
-                                    <a href={`tel:${tags.phone}`}>
+                                {phone && (
+                                    <a href={`tel:${phone}`}>
                                         {t('call')}
                                     </a>
                                 )}
