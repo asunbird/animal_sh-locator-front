@@ -22,6 +22,7 @@ const SPANISH_SPEAKING_COUNTRIES = [
 ];
 
 const CACHE_KEY = 'petmap_geolocation_language';
+const USER_LANGUAGE_KEY = 'petmap_user_language_preference';
 const CACHE_DURATION = 7 * 24 * 60 * 60 * 1000; // 7 days
 
 export const getLanguageFromLocation = async () => {
@@ -36,7 +37,7 @@ export const getLanguageFromLocation = async () => {
     }
 
     // Fetch geolocation data
-    const response = await fetch('https://geojs.io/apis/geoip/country', {
+    const response = await fetch('https://ipapi.co/json/', {
       timeout: 5000
     });
 
@@ -73,4 +74,16 @@ export const getLanguageFromLocation = async () => {
 
 export const clearGeolocationCache = () => {
   localStorage.removeItem(CACHE_KEY);
+};
+
+export const saveUserLanguagePreference = (language) => {
+  localStorage.setItem(USER_LANGUAGE_KEY, language);
+};
+
+export const getUserLanguagePreference = () => {
+  return localStorage.getItem(USER_LANGUAGE_KEY);
+};
+
+export const clearUserLanguagePreference = () => {
+  localStorage.removeItem(USER_LANGUAGE_KEY);
 };

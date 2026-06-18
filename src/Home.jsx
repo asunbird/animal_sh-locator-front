@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate, Outlet } from "react-router-dom";
 import { useTranslation } from 'react-i18next'; // 1. Import useTranslation
+import { changeLanguageAndSave } from './i18n'; // Import language change helper
 import logoIcon from '/src/assets/Logo-PetMap.svg'; // Import icons
 import gitHub from '/src/assets/GitHub.png'; // Import icons
 import { useSaveFavorites } from './hooks/useSaveFavorites';
@@ -11,8 +12,6 @@ import './LevelBadge.css';
 
 // Home component with header, main content, and footer
 function Home() {
-    // get tocken from local storge
-    console.log("Token from localStorage:", localStorage.getItem("token"));
 
     // Initialize translation hook
     const { t, i18n } = useTranslation();
@@ -20,6 +19,7 @@ function Home() {
     // Track what the user types
     const [searchInput, setSearchInput] = useState('');
   
+
     // Initialize the navigate function
     const navigate = useNavigate();
 
@@ -27,6 +27,9 @@ function Home() {
     const { favorites } = useSaveFavorites();
 
     const { token, setToken } = useAuth();
+
+    // get tocken from local storge
+    console.log("Token from context:", token);
 
     const handleSignOut = () => {
         setToken(null);
@@ -60,8 +63,8 @@ function Home() {
         // Update the language toggle handler
         const handleLangToggle = (e) => {
             const selectedLanguage = e.target.value.toLowerCase(); // 'es' or 'en'
-            i18n.changeLanguage(selectedLanguage);
-            // console.log(`User language changed to: ${selectedLanguage.toUpperCase()}`);
+            changeLanguageAndSave(selectedLanguage);
+            console.log(`User language changed to: ${selectedLanguage.toUpperCase()}`);
         };
             {/*
             setUserLanguage(selectedLanguage);
