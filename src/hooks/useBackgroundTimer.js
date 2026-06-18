@@ -16,13 +16,14 @@ const LEVEL_THRESHOLDS = [
 // level timer for testing
 // Each level increments by 60000ms (1 minute), cumulative
 const test_timer = [
-    0,                  // Level 0: 0 min
-  1 * 60 * 1000,       // Level 1: 1 min cumulative
-  2 * 60 * 1000,       // Level 2: 2 min cumulative
-  3 * 60 * 1000,       // Level 3: 3 min cumulative
-  4 * 60 * 1000,       // Level 4: 4 min cumulative
-  5 * 60 * 1000,       // Level 5: 5 min cumulative
-  7 * 60 * 1000,       // Level 6: 7 min cumulative
+    0,                  // Level 0: 1 min
+  1 * 60 * 1000,       // Level 1: 2 min cumulative
+  2 * 60 * 1000,       // Level 2: 3 min cumulative
+  3 * 60 * 1000,       // Level 3: 4 min cumulative
+  4 * 60 * 1000,       // Level 4: 5 min cumulative
+  5 * 60 * 1000,       // Level 5: 6 min cumulative
+  6 * 60 * 1000,
+  7 * 60 * 1000,      // Level 6: 7 min cumulative
 ];
 
 // Total cycle time: 7 minutes (then resets)
@@ -30,6 +31,7 @@ const TOTAL_CYCLE_TIME = test_timer[test_timer.length - 1];
 
 export const useBackgroundTimer = () => {
   const [level, setLevel] = useState(0);
+  const [levelProgress, setLevelProgress] = useState(0);
 
   // useRef keeps track of mutable values without triggering re-renders
   const accumulatedTimeRef = useRef(0);
@@ -56,7 +58,7 @@ export const useBackgroundTimer = () => {
         // 3. Determine the current level with cycling
         // Use modulo to cycle through levels (resets after reaching max)
         const cycleTime = accumulatedTimeRef.current % TOTAL_CYCLE_TIME;
-        
+
         let currentLevel = 0;
         for (let i = test_timer.length - 1; i >= 0; i--) {
           if (cycleTime >= test_timer[i]) {
@@ -65,17 +67,25 @@ export const useBackgroundTimer = () => {
           }
         }
 
-         // Update state (React batches this, so it only re-renders if level changes)
-         setLevel(currentLevel);
+        // 4. Calculate progress within the current level (0–100)
+        const levelStart = test_timer[currentLevel];
+        const levelEnd = currentLevel < test_timer.length - 1
+          ? test_timer[currentLevel + 1]
+          : TOTAL_CYCLE_TIME;
+        const progress = Math.min(100, Math.round(((cycleTime - levelStart) / (levelEnd - levelStart)) * 100));
+
+        // Update state (React batches this, so it only re-renders if values change)
+        setLevel(currentLevel);
+        setLevelProgress(progress);
       }
 
       // Check again in 1 second
-      timeoutId = setTimeout(tick, 1000); 
+      timeoutId = setTimeout(tick, 1000);
     };
 
     tick();
 
-    // 4. Handle edge cases when the user switches tabs and comes back
+    // 5. Handle edge cases when the user switches tabs and comes back
     const handleVisibilityChange = () => {
       if (!document.hidden) {
         // When they return, reset the clock so we don't count the time they were gone
@@ -91,5 +101,5 @@ export const useBackgroundTimer = () => {
     };
   }, []);
 
-  return level;
+  return { level, levelProgress };
 };

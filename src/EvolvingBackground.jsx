@@ -14,7 +14,7 @@ const backgroundImages = [
 
 
 function EvolvingBackground({ children }) {
-  const currentLevel = useBackgroundTimer();
+  const { level: currentLevel } = useBackgroundTimer();
   
   return (
     <div className="app-container">

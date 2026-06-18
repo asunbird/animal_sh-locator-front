@@ -4,6 +4,9 @@ import { useTranslation } from 'react-i18next'; // 1. Import useTranslation
 import logoIcon from '/src/assets/Logo-PetMap.svg'; // Import icons
 import gitHub from '/src/assets/GitHub.png'; // Import icons
 import { useSaveFavorites } from './hooks/useSaveFavorites';
+import { useAuth } from './hooks/useAuth';
+import LevelBadge from './LevelBadge.jsx';
+import './LevelBadge.css';
 
 
 // Home component with header, main content, and footer
@@ -22,6 +25,13 @@ function Home() {
 
     // Grab favorites from the custom hook
     const { favorites } = useSaveFavorites();
+
+    const { token, setToken } = useAuth();
+
+    const handleSignOut = () => {
+        setToken(null);
+        navigate('/');
+    };
 
     // Create the onClick handler
     const handleSearchClick = () => {
@@ -75,14 +85,18 @@ function Home() {
                 <div>
                     <img className="logo-icon" src={logoIcon} alt="Pet Map Logo" />
                 </div>
-                {/* Level Badge - Translated */}  
-                <div id="level" className="level-badge">
-                    <span>{t('level')}</span>
-                    <div className="level-progress-bar">
-                        <div className="progress-fill" style={{ width: '50%' }}></div>
-                    </div>
-                </div>
 
+                {/* Level Badge - Translated */}  
+                <LevelBadge />
+                {/* 
+                    <div className="level-up-6 flex-row">
+                        <div><span>✨</span></div>
+                        <div>
+                            <span>Level Up!</span><span>You've reached Level 6</span>
+                        </div>
+                    </div>
+                 */}  
+                
                 {/* Language Switcher ES-EN */}
                 <div id="lang" className="lang-switch-container">
                     <button onClick={handleLangToggle} id="lang-ES-btn" className="lang-btns" value="ES">ES</button>
@@ -92,12 +106,18 @@ function Home() {
                     <button onClick={handleLangToggle} id="lang-EN-btn" className="lang-btns" value="EN">EN</button>
                 </div>
 
-                <nav className="nav-links jost-700"> 
-                    <Link id="autorisation" to="/components/signin">
-                        {t('signIn')}
-                    </Link>
+                <nav className="nav-links jost-700">
+                    {token ? (
+                        <button id="signout" className="nav-link-btn jost-700" onClick={handleSignOut}>
+                            {t('signOut')}
+                        </button>
+                    ) : (
+                        <Link id="autorisation" to="/components/signin">
+                            {t('signIn')}
+                        </Link>
+                    )}
                     <Outlet/>
-                </nav>    
+                </nav>
 
                 {/* Favorites button - Translated */}
                 <div className="fav-container flex-row">
@@ -139,6 +159,69 @@ function Home() {
                         </button>
                     </div>
                 </div>
+
+                {/* Level Badge - CSS-Test container
+                <div className="flex-row">
+                    <div className="level-badge-0 level-badge">
+                        <div className="flex-row">
+                            <span>{t('level')}: </span><span>0</span>
+                        </div>
+                        <div className="level-progress-bar">
+                            <div className="progress-fill" style={{ width: '50%'}}></div>
+                        </div>
+                    </div>
+
+                    <div className="level-badge-1 level-badge">
+                        <div className="flex-row">
+                            <span>{t('level')}: </span><span>1</span>
+                        </div>
+                        <div className="level-progress-bar">
+                            <div className="progress-fill" style={{ width: '50%'}}></div>
+                        </div>
+                    </div>
+                    <div className="level-badge-2 level-badge">
+                        <div className="flex-row">
+                            <span>{t('level')}: </span><span>2</span>
+                        </div>
+                        <div className="level-progress-bar">
+                            <div className="progress-fill" style={{ width: '50%'}}></div>
+                        </div>
+                    </div>
+                    <div className="level-badge-3 level-badge">
+                        <div className="flex-row">
+                            <span>{t('level')}: </span><span>3</span>
+                        </div>
+                        <div className="level-progress-bar">
+                            <div className="progress-fill" style={{ width: '50%'}}></div>
+                        </div>
+                    </div>
+                    <div className="level-badge-4 level-badge">
+                        <div className="flex-row">
+                            <span>{t('level')}: </span><span>4</span>
+                        </div>
+                        <div className="level-progress-bar">
+                            <div className="progress-fill" style={{ width: '50%'}}></div>
+                        </div>
+                    </div>
+                    <div className="level-badge-5 level-badge">
+                        <div className="flex-row">
+                            <span>{t('level')}: </span><span>5</span>
+                        </div>
+                        <div className="level-progress-bar">
+                            <div className="progress-fill" style={{ width: '50%'}}></div>
+                        </div>
+                    </div>
+                    <div className="level-badge-6 level-badge">
+                        <div className="flex-row">
+                            <span>{t('level')}: </span><span>6</span>
+                        </div>
+                        <div className="level-progress-bar">
+                            <div className="progress-fill" style={{ width: '50%'}}></div>
+                        </div>
+                    </div>
+                </div>
+                 */}
+
             </main>
 
             <footer className="libre-franklin-700">

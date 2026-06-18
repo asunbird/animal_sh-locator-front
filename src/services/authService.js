@@ -31,18 +31,17 @@ export async function login(email, password) {
   if (!response.ok) throw new Error(data.message || 'Authentication failed');
 
   // JWT token → cookie (SameSite=Strict prevents CSRF)
-  setJwtCookie(data.token);
+  setJwtCookie(data.accessToken);
 
   // Non-sensitive user session → localStorage
   localStorage.setItem('user_session', JSON.stringify({
     id: data.user.id,
     name: data.user.name,
     email: data.user.email,
-    role: data.user.role,
     loginTime: new Date().toISOString(),
   }));
 
-  return data;
+  return { token: data.accessToken, user: data.user };
 }
 
 export async function register(name, email, password) {
