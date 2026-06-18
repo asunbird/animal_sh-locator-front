@@ -315,11 +315,11 @@ header {
 #autorisation,
 #signout {
   text-decoration: underline;
-  border: 2px solid var(--text-muted);
+  border: 1px solid var(--text-muted);
   padding: var(--spacing-xs) var(--spacing-md);
-  border-radius: 12px;
+  border-radius: 20px;
   transition: all 0.3s ease-in-out;
-  color: var(--text-main);
+  color: var(--black);
   font-size: var(--font-size-sm);
   background: transparent;
   cursor: pointer;
