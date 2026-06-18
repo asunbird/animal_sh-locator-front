@@ -168,6 +168,7 @@ function Map() {
         setIsLoadingShelters(true);
 
         const mirrors = [
+            'https://overpass.openstreetmap.fr/api/interpreter',
             'https://overpass-api.de/api/interpreter',
             'https://overpass.karte.io/api/interpreter',
             'https://overpass.openstreetmap.ru/api/interpreter',
@@ -175,7 +176,7 @@ function Map() {
 
         const radius = 50000; // 50km
         const overpassQuery = `
-            [out:json][timeout:25];
+            [out:json][timeout:30];
             (
                 nwr["amenity"="animal_shelter"](around:${radius},${lat},${lon});
                 nwr["tourism"="animal_boarding"](around:${radius},${lat},${lon});
@@ -187,32 +188,40 @@ function Map() {
 
         let lastError = null;
 
-        for (const mirror of mirrors) {
-            try {
-                const response = await fetch(mirror, {
-                    method: 'POST',
-                    body: `data=${encodeURIComponent(overpassQuery)}`
-                });
+        for (let attempt = 0; attempt < 2; attempt++) {
+            for (const mirror of mirrors) {
+                try {
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 15000);
 
-                if (!response.ok) {
-                    throw new Error(`Status ${response.status}`);
+                    const response = await fetch(mirror, {
+                        method: 'POST',
+                        body: `data=${encodeURIComponent(overpassQuery)}`,
+                        signal: controller.signal
+                    });
+
+                    clearTimeout(timeoutId);
+
+                    if (!response.ok) {
+                        throw new Error(`Status ${response.status}`);
+                    }
+
+                    const data = await response.json();
+                    const elements = data.elements || [];
+
+                    if (elements.length === 0) {
+                        console.warn(`No shelters found near ${lat}, ${lon} within 50km`);
+                    }
+
+                    setShelters(elements);
+                    setIsLoadingShelters(false);
+                    return;
+
+                } catch (err) {
+                    console.warn(`Mirror ${mirror} (attempt ${attempt + 1}/2) failed:`, err.message);
+                    lastError = err;
+                    await new Promise(resolve => setTimeout(resolve, 1000));
                 }
-
-                const data = await response.json();
-                const elements = data.elements || [];
-
-                if (elements.length === 0) {
-                    console.warn(`No shelters found near ${lat}, ${lon} within 50km`);
-                }
-
-                setShelters(elements);
-                setIsLoadingShelters(false);
-                return;
-
-            } catch (err) {
-                console.warn(`Mirror ${mirror} failed, trying next...:`, err.message);
-                lastError = err;
-                await new Promise(resolve => setTimeout(resolve, 500));
             }
         }
 
