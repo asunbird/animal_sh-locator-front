@@ -11,8 +11,6 @@ import './LevelBadge.css';
 
 // Home component with header, main content, and footer
 function Home() {
-    // get tocken from local storge
-    console.log("Token from localStorage:", localStorage.getItem("token"));
 
     // Initialize translation hook
     const { t, i18n } = useTranslation();
@@ -20,6 +18,7 @@ function Home() {
     // Track what the user types
     const [searchInput, setSearchInput] = useState('');
   
+
     // Initialize the navigate function
     const navigate = useNavigate();
 
@@ -27,6 +26,9 @@ function Home() {
     const { favorites } = useSaveFavorites();
 
     const { token, setToken } = useAuth();
+
+    // get tocken from local storge
+    console.log("Token from context:", token);
 
     const handleSignOut = () => {
         setToken(null);
