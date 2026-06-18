@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import logoIcon from '/src/assets/Logo-PetMap.svg';
 import { useAuth } from "../hooks/useAuth";
 import { login } from "../services/authService";
+import { syncLocalStorageFavorites } from "../services/favoritesService";
 
 const SignIn = () => {
     const { t } = useTranslation();
@@ -24,6 +25,18 @@ const SignIn = () => {
         setIsLoading(true);
         try {
             const result = await login(data.email, data.password);
+
+            const localFavorites = localStorage.getItem('paws_favorites');
+            if (localFavorites) {
+                try {
+                    const favorites = JSON.parse(localFavorites);
+                    await syncLocalStorageFavorites(favorites, result.token);
+                    localStorage.removeItem('paws_favorites');
+                } catch (syncError) {
+                    console.error('Failed to sync favorites:', syncError);
+                }
+            }
+
             setToken(result.token);
             navigate("/", { replace: true });
         } catch (error) {
