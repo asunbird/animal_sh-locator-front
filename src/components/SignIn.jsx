@@ -55,13 +55,14 @@ const SignIn = () => {
                     </Link>
                 </div>
             </header>
-            <main className="white-container">
-                <div>{t('signInTitle')}</div>
+
+            <main className="white-container flex-column">
+                <div className="jost-700">{t('signInTitle')}</div>
                 <form id="signinForm" onSubmit={handleSubmit(onSubmit)}>
 
-                    <div className="form-group">
+                    <div className="form-group flex-column">
                         <label htmlFor="email">{t('email')}</label>
-                        <input
+                        <input  className="signin-input"
                             type="email"
                             {...register("email", { required: true })}
                             id="email"
@@ -75,9 +76,9 @@ const SignIn = () => {
                         )}
                     </div>
 
-                    <div className="form-group">
-                        <label htmlFor="password">Password</label>
-                        <input
+                    <div className="form-group flex-column">
+                        <label htmlFor="password">Enter your Password</label>
+                        <input className="signin-input"
                             type="password"
                             {...register("password", { required: true })}
                             id="password"
@@ -97,13 +98,16 @@ const SignIn = () => {
                         </div>
                     )}
 
-                    <button type="submit" id="submit-btn" disabled={isLoading}>
+                    <button className="submit-btn nav-sections" type="submit" id="submit-btn" disabled={isLoading}>
                         {isLoading ? t('signingIn') || 'Signing in…' : t('signIn')}
                     </button>
-
                 </form>
-                <div>{t('createAccountTitle')}</div>
-                <Link to="/components/registration">{t('registration')}</Link>
+
+                <div>
+                    {t('createAccountTitle')} 
+                    <br/><br/>
+                    <Link className="nav-sections" to="/components/registration">{t('registration')}</Link>
+                </div>
             </main>
         </section>
     );

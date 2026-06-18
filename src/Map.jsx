@@ -243,8 +243,8 @@ function Map() {
                     </Link> 
                 </div> 
                 {/* MAP Search bar */}
-                <form id="map-search-bar" className="search-bar-container bg-base" onSubmit={handleSearch}>
-                    <input id="location-input" className="search-input"
+                <form id="map-search-bar" className="search-bar-container bg-base libre-franklin-700" onSubmit={handleSearch}>
+                    <input id="location-input" className="search-input libre-franklin-700"
                         type="text" 
                         placeholder={t('searchCityPlaceholder')} 
                         value={searchQuery}
@@ -260,7 +260,7 @@ function Map() {
                 {/* Search in this area Btn */}
                 <div>
                     <button 
-                        className="round-container bg-cyan-blue"
+                        className="round-container bg-cyan-blue libre-franklin-700"
                         onClick={searchInArea}
                         title={t('searchInAreaTitle')}
                         disabled={isLoadingShelters}

@@ -149,13 +149,13 @@ function Home() {
                             value={searchInput}
                             onChange={(e) => setSearchInput(e.target.value)}
                             id="location-input"
-                            className="search-input"
+                            className="search-input libre-franklin-700"
                             name="search"
                             required
                         />
                         {/* Search Button - Translated (Action Button) */}
                         <button onClick={handleSearchClick} id="search-btn" 
-                            className="search-button" type="button" >
+                            className="search-button libre-franklin-700" type="button" >
                             {t('searchBtn')}
                         </button>
                     </div>

@@ -108,7 +108,7 @@ export default function ShelterCard({ shelter, onCardClick, isFavorite, onToggle
             <button style={actionBtnStyle}
               onClick={(e) => {
                 e.stopPropagation();
-                handleShare();
+                handleShare(e);
               }}
             >
               ↗ {t('share')}
