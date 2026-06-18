@@ -1,33 +1,65 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
+import { AuthContext } from '../provider/authContext';
+import { saveFavorite, removeFavorite, fetchUserFavorites } from '../services/favoritesService';
 
-// Custom Hook: useSaveFavorites
-// Hooks must be at the top level of a React component or custom Hook
 export const useSaveFavorites = () => {
+  const { token } = useContext(AuthContext);
   const [favorites, setFavorites] = useState(() => {
     const saved = localStorage.getItem('paws_favorites');
     return saved ? JSON.parse(saved) : [];
   });
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Persist favorites to localStorage whenever they change
   useEffect(() => {
-    localStorage.setItem('paws_favorites', JSON.stringify(favorites));
-  }, [favorites]);
+    const loadFavorites = async () => {
+      if (token) {
+        try {
+          setIsLoading(true);
+          const data = await fetchUserFavorites();
+          setFavorites(data.favorites || []);
+        } catch (error) {
+          console.error('Failed to load favorites from backend:', error);
+          const saved = localStorage.getItem('paws_favorites');
+          setFavorites(saved ? JSON.parse(saved) : []);
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    };
 
-  // Toggle function: adds or removes a shelter from favorites
-  const toggleFavorite = (shelter) => {
+    loadFavorites();
+  }, [token]);
+
+  useEffect(() => {
+    if (!token) {
+      localStorage.setItem('paws_favorites', JSON.stringify(favorites));
+    }
+  }, [favorites, token]);
+
+  const toggleFavorite = async (shelter) => {
     setFavorites((prev) => {
       const isFav = prev.some((f) => f.id === shelter.id);
       if (isFav) {
-        // Remove from favorites
         return prev.filter((f) => f.id !== shelter.id);
       } else {
-        // Add to favorites
         return [...prev, shelter];
       }
     });
+
+    if (token) {
+      try {
+        const isFav = favorites.some((f) => f.id === shelter.id);
+        if (isFav) {
+          await removeFavorite(shelter.id);
+        } else {
+          await saveFavorite(shelter);
+        }
+      } catch (error) {
+        console.error('Failed to sync favorite with backend:', error);
+      }
+    }
   };
 
-  // Check if a shelter is in favorites
   const isFavorite = (shelterId) => {
     return favorites.some((f) => f.id === shelterId);
   };
@@ -36,6 +68,7 @@ export const useSaveFavorites = () => {
     favorites,
     toggleFavorite,
     isFavorite,
+    isLoading,
   };
 };
 
