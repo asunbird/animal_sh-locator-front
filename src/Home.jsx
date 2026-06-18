@@ -28,8 +28,6 @@ function Home() {
 
     const { token, setToken } = useAuth();
 
-    // get tocken from local storge
-    console.log("Token from context:", token);
 
     const handleSignOut = () => {
         setToken(null);
