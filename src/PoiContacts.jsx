@@ -51,7 +51,7 @@ export default function ShelterCard({ shelter, onCardClick, isFavorite, onToggle
     >
 
       {/* 1. ALWAYS VISIBLE: Name and Coordinates */}
-      <div className="card-header" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+      <div className="card-header jost-700" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
           <h3 style={{ margin: '0 0 8px 0', fontSize: '1.1rem' }}>{name}</h3>
           <p style={{ margin: '0', fontSize: '0.8rem', color: '#888' }}>
             📍 {lat?.toFixed(5)}, {lon?.toFixed(5)}
@@ -60,7 +60,7 @@ export default function ShelterCard({ shelter, onCardClick, isFavorite, onToggle
 
       {/* 2. EXPANDED VIEW: Rendered only when card is active */}
       {isActive && (
-        <div className="expanded-content" style={{ marginTop: '12px', paddingTop: '12px', borderTop: '1px solid #eee' }}>
+        <div className="expanded-content libre-franklin-700" style={{ marginTop: '12px', paddingTop: '12px', borderTop: '1px solid #eee' }}>
           
           <p style={{ margin: '0 0 12px 0', fontSize: '0.85rem', color: '#555' }}>📍 {address}</p>
 
@@ -108,7 +108,7 @@ export default function ShelterCard({ shelter, onCardClick, isFavorite, onToggle
             <button style={actionBtnStyle}
               onClick={(e) => {
                 e.stopPropagation();
-                handleShare();
+                handleShare(e);
               }}
             >
               ↗ {t('share')}

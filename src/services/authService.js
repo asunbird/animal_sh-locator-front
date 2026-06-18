@@ -30,10 +30,8 @@ export async function login(email, password) {
   const data = await response.json();
   if (!response.ok) throw new Error(data.message || 'Authentication failed');
 
-  // JWT token → cookie (SameSite=Strict prevents CSRF)
   setJwtCookie(data.accessToken);
 
-  // Non-sensitive user session → localStorage
   localStorage.setItem('user_session', JSON.stringify({
     id: data.user.id,
     name: data.user.name,
@@ -58,6 +56,45 @@ export async function register(name, email, password) {
   if (!response.ok) throw new Error(data.message || 'Registration failed');
 
   return data;
+}
+
+export async function refreshToken() {
+  try {
+    const currentToken = getJwtToken();
+    if (!currentToken) {
+      console.log('[refreshToken] No token to refresh');
+      return null;
+    }
+
+    console.log('[refreshToken] Attempting to refresh token...');
+
+    const response = await fetch(`${API_URL}/auth/refresh`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${currentToken}`,
+      },
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      console.warn('[refreshToken] Refresh failed:', data.message);
+      clearJwtCookie();
+      localStorage.removeItem('user_session');
+      return null;
+    }
+
+    console.log('[refreshToken] Token refreshed successfully');
+    setJwtCookie(data.accessToken);
+    return data.accessToken;
+  } catch (error) {
+    console.error('[refreshToken] Error:', error.message);
+    clearJwtCookie();
+    localStorage.removeItem('user_session');
+    return null;
+  }
 }
 
 export function logout() {
