@@ -1,4 +1,11 @@
+# .env files and local secrets
+.env
+.env*.local
+.env.development.local
+.env.test.local
+.env.production.local
 .env.local
+
 
 # Logs
 logs
@@ -47,13 +54,7 @@ Generated\ Files/
 .rts2_cache_cjs/
 .rts2_cache_es/
 .rts2_cache_umd/
-# .env files and local secrets
-.env
-.env*.local
-.env.development.local
-.env.test.local
-.env.production.local
-.env.local
+
 # Machine specific configuration
 
 # vercel
