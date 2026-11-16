@@ -110,13 +110,17 @@ function Home() {
 
                 <nav className="nav-links jost-700">
                     {token ? (
+                        <span className="flex-row " >
                         <button id="signout" className="nav-link-btn jost-700" onClick={handleSignOut}>
                             {t('signOut')}
                         </button>
+                        </span>
                     ) : (
-                        <Link id="autorisation" to="/components/signin">
-                            {t('signIn')}
-                        </Link>
+                        <span className="flex-row " >
+                            <Link id="autorisation" to="/components/signin">
+                                {t('signIn')}
+                            </Link>
+                        </span>
                     )}
                     <Outlet/>
                 </nav>
