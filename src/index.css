@@ -930,13 +930,24 @@ footer a {
 
 /* Small Mobile Devices (< 480px) */
 @media screen and (max-width: 479px) {
-  :root {
-    --font-size-2xl: clamp(1.25rem, 4vw, 1.5rem);
-    --font-size-3xl: clamp(1.5rem, 5vw, 1.875rem);
-    --font-size-4xl: clamp(1.75rem, 6vw, 2rem);
-    --spacing-2xl: clamp(1rem, 3vw, 1.5rem);
+
+  .jost-700 {
+    font-family: var(--font-heading);
+    font-optical-sizing: auto;
+    font-weight: 700;
+    font-style: normal;
+    font-size: var(--font-size-2xl);
   }
 
+  .libre-franklin-700 {
+    font-family: var(--font-body);
+    font-optical-sizing: auto;
+    font-weight: 700;
+    font-style: normal;
+    font-size: var(--font-size-base);
+  }
+
+  
   header {
     flex-direction: column;
     min-height: auto;
@@ -1011,10 +1022,8 @@ footer a {
     width: 90%;
   }
 
-  footer {
-    justify-content: space-between;
-    font-size: small;
-  }
+ 
+  
 }
 
 /* Mobile Devices (480px - 768px) */
