@@ -124,7 +124,6 @@ p {
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: var(--spacing-sm);
   flex-wrap: wrap;
 }
 
@@ -842,7 +841,7 @@ form .user-contacts {
 /* Footer Styles */
 footer {
   width: 100%;
-  height: auto;
+  height: fit-content;
   min-height: 60px;
   position: fixed;
   bottom: 0;
@@ -850,6 +849,7 @@ footer {
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: var(--spacing-sm);
   color: var(--white);
   padding: auto 4px;
 }
@@ -858,15 +858,21 @@ footer a {
   color: var(--white);
   text-decoration: underline;
   font-weight: 700;
-  margin: auto 4px;
+  text-align: center;
+  display:flex;
 }
 
+.footer-links {
+  box-sizing: border-box;
+  font-weight: 700;
+
+}
 
 .github {
   box-sizing: border-box;
   width: 20px;
-  height: auto;
-  margin: 12px;
+  height: fit-content;
+  margin: 0 var(--spacing-xs) 0 0;
 }
 
 
