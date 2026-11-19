@@ -36,31 +36,31 @@
   /* heart icon variable */
   --heart-icon: url('/src/assets/icons/Heart-icon.svg');
 
-  /* Font Families */
-  --font-heading: "Jost", sans-serif;
-  --font-body: "Libre Franklin", sans-serif;
-
+  /* Font Styles */
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-.jost-700 {
-  font-family: var(--font-heading);
+/* ... Font Families ... */
+/* <weight>: Use a value from 100 to 900 */
+.jost-700 { /* Bold - for UpperCase headings and labels */
+  font-family: "Jost", sans-serif;
   font-optical-sizing: auto;
   font-weight: 700;
   font-style: normal;
   font-size: var(--font-size-xl);
 }
-
-.libre-franklin-700 {
-  font-family: var(--font-body);
+/* <weight>: Use a value from 100 to 900 */
+.libre-franklin-700 { /* Bold - for Regular text */
+  font-family: "Libre Franklin", sans-serif;
   font-optical-sizing: auto;
   font-weight: 700;
   font-style: normal;
   font-size: var(--font-size-sm);
 }
+
 
 /* Color Styles */
 .bg-cyan-blue {
@@ -71,6 +71,7 @@
 }
 .text-black { color: var(--black); }
 .text-white { color: var(--white); }
+
 
 html, body, #root {
   margin: 0;
@@ -682,10 +683,28 @@ form .user-contacts {
   width: 100%;
   z-index: 3;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.home-fav-links {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  flex-wrap: wrap;
+}
+.map-search-container {
+  width: 100%;
+  display: flex;
+  align-items: center;  
+  flex-wrap: wrap;
 }
 
 #map-search-bar {
-  margin: 0;
+  margin: 12px;
 }
 
 /* Status Message Refinement */
@@ -932,7 +951,7 @@ footer a {
 @media screen and (max-width: 479px) {
 
   .jost-700 {
-    font-family: var(--font-heading);
+    font-family: "Jost", sans-serif;
     font-optical-sizing: auto;
     font-weight: 700;
     font-style: normal;
@@ -940,7 +959,7 @@ footer a {
   }
 
   .libre-franklin-700 {
-    font-family: var(--font-body);
+    font-family: "Libre Franklin", sans-serif;
     font-optical-sizing: auto;
     font-weight: 700;
     font-style: normal;
@@ -949,10 +968,11 @@ footer a {
 
   
   header {
-    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: center;
     min-height: auto;
     padding: var(--spacing-sm);
-    gap: var(--spacing-sm);
+    gap: var(--spacing-md);
   }
 
   .logo-icon {
@@ -961,18 +981,16 @@ footer a {
   }
 
   .lang-switch-container {
-    width: 100%;
     justify-content: center;
   }
 
   .nav-links {
-    width: 100%;
     gap: var(--spacing-sm);
     justify-content: center;
   }
 
   .fav-container {
-    width: 100%;
+    width: fit-content;
   }
 
   .search-bar-container {
@@ -1040,7 +1058,6 @@ footer a {
   }
 
   .nav-links {
-    width: 100%;
     gap: var(--spacing-md);
     justify-content: center;
   }
@@ -1070,7 +1087,7 @@ footer a {
 @media screen and (min-width: 768px) and (max-width: 1023px) {
   header {
     flex-wrap: wrap;
-    justify-content: space-around;
+    justify-content: center;
     align-items: center;
   }
 
