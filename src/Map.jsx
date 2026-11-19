@@ -237,72 +237,72 @@ function Map() {
     return (
         <section id="map-search">
             <header id="map-navigation">
-                <div>
-                    <Link className="home-btn" to="/">
-                        <img className="logo-icon" src={logoIcon} alt="Pet Map Logo" />
-                    </Link> 
-                </div> 
-                {/* MAP Search bar */}
-                <form id="map-search-bar" className="search-bar-container bg-base libre-franklin-700" onSubmit={handleSearch}>
-                    <input id="location-input" className="search-input libre-franklin-700"
-                        type="text" 
-                        placeholder={t('searchCityPlaceholder')} 
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                    />
-                    <button id="search-btn" className="search-button" 
-                        type="submit" disabled={isSearching}>
-                        {isSearching ? '...' : t('goBtn')}
-                    </button>
-                </form>
-
-                
-                {/* Search in this area Btn */}
-                <div>
-                    <button 
-                        className="round-container bg-cyan-blue libre-franklin-700"
-                        onClick={searchInArea}
-                        title={t('searchInAreaTitle')}
-                        disabled={isLoadingShelters}
-                    >
-                        <p className="libre-franklin-700">
-                            {isLoadingShelters ? t('searchingStatus') : t('searchThisAreaBtn')}
-                        </p>
-                    </button>
+                <div className="home-fav-links">
+                    <div>
+                        <Link className="home-btn" to="/">
+                            <img className="logo-icon" src={logoIcon} alt="Pet Map Logo" />
+                        </Link> 
+                    </div> 
+                    {/* Favorites buton */}
+                    <div className="fav-container flex-row">
+                        <Link className="nav-sections" to="/favorites" id="favorites" style={{ textDecoration: 'none' }}> 
+                            <div id="favorites-btn" >
+                                <p id="favorites-count" className="icon-text libre-franklin-700">{favorites.length}</p>
+                            </div>
+                            <p className="libre-franklin-700">
+                                {t('favorites')}
+                            </p>
+                        </Link>
+                    </div> 
                 </div>
-
-
-               {/* Favorites buton */}
-                <div className="fav-container flex-row">
-                    <Link className="nav-sections" to="/favorites" id="favorites" style={{ textDecoration: 'none' }}> 
-                        <div id="favorites-btn" >
-                            <p id="favorites-count" className="icon-text libre-franklin-700">{favorites.length}</p>
-                        </div>
-                        <p className="libre-franklin-700">
-                            {t('favorites')}
-                        </p>
-                    </Link>
-                </div> 
                 
-                {/* ZOOM Controls */}
-                <div className="round-container-vert">
-                    <button 
-                        id="map-switcher-zoom-plus" 
-                        className="round-switch-btn"
-                        onClick={handleZoomIn}
-                        title={t('zoomIn')}
-                    >
-                        <p className="jost-700">+</p>
-                    </button>
-                    <button 
-                        id="map-switcher-zoom-minus" 
-                        className="round-switch-btn flip-vertical"
-                        onClick={handleZoomOut}
-                        title={t('zoomOut')}
-                    >
-                        <p className="jost-700">-</p>
-                    </button>
-                </div> 
+                <div className="map-search-container">
+                    {/* Search in this area Btn */}
+                    <div className="flex-row" style={{ gap: '24px', alignItems: 'center' }}>
+                        {/* ZOOM Controls */}
+                        <div className="round-container-vert">
+                            <button 
+                                id="map-switcher-zoom-plus" 
+                                className="round-switch-btn"
+                                onClick={handleZoomIn}
+                                title={t('zoomIn')}
+                            >
+                                <p className="jost-700">+</p>
+                            </button>
+                            <button 
+                                id="map-switcher-zoom-minus" 
+                                className="round-switch-btn flip-vertical"
+                                onClick={handleZoomOut}
+                                title={t('zoomOut')}
+                            >
+                                <p className="jost-700">-</p>
+                            </button>
+                        </div> 
+                        <button 
+                            className="round-container bg-cyan-blue libre-franklin-700"
+                            onClick={searchInArea}
+                            title={t('searchInAreaTitle')}
+                            disabled={isLoadingShelters}
+                        >
+                            <p className="libre-franklin-700">
+                                {isLoadingShelters ? t('searchingStatus') : t('searchThisAreaBtn')}
+                            </p>
+                        </button>
+                    </div>
+                    {/* MAP Search bar */}
+                    <form id="map-search-bar" className="search-bar-container bg-base libre-franklin-700" onSubmit={handleSearch}>
+                        <input id="location-input" className="search-input libre-franklin-700"
+                            type="text" 
+                            placeholder={t('searchCityPlaceholder')} 
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                        />
+                        <button id="search-btn" className="search-button" 
+                            type="submit" disabled={isSearching}>
+                            {isSearching ? '...' : t('goBtn')}
+                        </button>
+                    </form>
+                </div>
             </header>
             <main id="map-main-content">
                 <MapContainer id="leaflet-map" center={initialMapCenter} zoom={13} zoomControl={false} ref={setMap} >

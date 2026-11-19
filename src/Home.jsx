@@ -110,13 +110,17 @@ function Home() {
 
                 <nav className="nav-links jost-700">
                     {token ? (
+                        <span className="flex-row " >
                         <button id="signout" className="nav-link-btn jost-700" onClick={handleSignOut}>
                             {t('signOut')}
                         </button>
+                        </span>
                     ) : (
-                        <Link id="autorisation" to="/components/signin">
-                            {t('signIn')}
-                        </Link>
+                        <span className="flex-row " >
+                            <Link id="autorisation" to="/components/signin">
+                                {t('signIn')}
+                            </Link>
+                        </span>
                     )}
                     <Outlet/>
                 </nav>
@@ -227,15 +231,18 @@ function Home() {
             </main>
 
             <footer className="libre-franklin-700 flex-row">
-                {t('footerMap')}
-                <img className="github" src={gitHub} alt="GitHub" />
-                <a href="https://github.com/asunbird/Animal-shelters-Locator-Frontend" target="_blank" rel="noreferrer">
-                    GitHub 
-                </a>
-                 |
-                <div className="nav-links libre-franklin-700 flex-row" >
-                    <Link to="/about">{t('about')}</Link>
-                </div>
+                <span className="flex-row" >© 2026 Pet Map</span>
+                <span className="flex-row">|</span>
+                <span  className="flex-row ">
+                    <img className="github" src={gitHub} alt="GitHub" />
+                    <a href="https://github.com/asunbird/Animal-shelters-Locator-Frontend" target="_blank" rel="noreferrer">
+                        <span className="flex-row " >GitHub</span> 
+                    </a>
+                </span>
+                <span className="flex-row">|</span>
+                <span className="flex-row " >
+                    <Link to="/about"><span className="flex-row " >{t('about')}</span></Link>
+                </span> 
             </footer>
         </section>
     );

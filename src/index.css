@@ -36,31 +36,31 @@
   /* heart icon variable */
   --heart-icon: url('/src/assets/icons/Heart-icon.svg');
 
-  /* Font Families */
-  --font-heading: "Jost", sans-serif;
-  --font-body: "Libre Franklin", sans-serif;
-
+  /* Font Styles */
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-.jost-700 {
-  font-family: var(--font-heading);
+/* ... Font Families ... */
+/* <weight>: Use a value from 100 to 900 */
+.jost-700 { /* Bold - for UpperCase headings and labels */
+  font-family: "Jost", sans-serif;
   font-optical-sizing: auto;
   font-weight: 700;
   font-style: normal;
   font-size: var(--font-size-xl);
 }
-
-.libre-franklin-700 {
-  font-family: var(--font-body);
+/* <weight>: Use a value from 100 to 900 */
+.libre-franklin-700 { /* Bold - for Regular text */
+  font-family: "Libre Franklin", sans-serif;
   font-optical-sizing: auto;
   font-weight: 700;
   font-style: normal;
   font-size: var(--font-size-sm);
 }
+
 
 /* Color Styles */
 .bg-cyan-blue {
@@ -71,6 +71,7 @@
 }
 .text-black { color: var(--black); }
 .text-white { color: var(--white); }
+
 
 html, body, #root {
   margin: 0;
@@ -124,7 +125,6 @@ p {
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: var(--spacing-sm);
   flex-wrap: wrap;
 }
 
@@ -683,10 +683,28 @@ form .user-contacts {
   width: 100%;
   z-index: 3;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.home-fav-links {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  flex-wrap: wrap;
+}
+.map-search-container {
+  width: 100%;
+  display: flex;
+  align-items: center;  
+  flex-wrap: wrap;
 }
 
 #map-search-bar {
-  margin: 0;
+  margin: 12px;
 }
 
 /* Status Message Refinement */
@@ -842,7 +860,7 @@ form .user-contacts {
 /* Footer Styles */
 footer {
   width: 100%;
-  height: auto;
+  height: fit-content;
   min-height: 60px;
   position: fixed;
   bottom: 0;
@@ -850,6 +868,7 @@ footer {
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: var(--spacing-sm);
   color: var(--white);
   padding: auto 4px;
 }
@@ -858,15 +877,21 @@ footer a {
   color: var(--white);
   text-decoration: underline;
   font-weight: 700;
-  margin: auto 4px;
+  text-align: center;
+  display:flex;
 }
 
+.footer-links {
+  box-sizing: border-box;
+  font-weight: 700;
+
+}
 
 .github {
   box-sizing: border-box;
   width: 20px;
-  height: auto;
-  margin: 12px;
+  height: fit-content;
+  margin: 0 var(--spacing-xs) 0 0;
 }
 
 
@@ -924,18 +949,30 @@ footer a {
 
 /* Small Mobile Devices (< 480px) */
 @media screen and (max-width: 479px) {
-  :root {
-    --font-size-2xl: clamp(1.25rem, 4vw, 1.5rem);
-    --font-size-3xl: clamp(1.5rem, 5vw, 1.875rem);
-    --font-size-4xl: clamp(1.75rem, 6vw, 2rem);
-    --spacing-2xl: clamp(1rem, 3vw, 1.5rem);
+
+  .jost-700 {
+    font-family: "Jost", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 700;
+    font-style: normal;
+    font-size: var(--font-size-2xl);
   }
 
+  .libre-franklin-700 {
+    font-family: "Libre Franklin", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 700;
+    font-style: normal;
+    font-size: var(--font-size-base);
+  }
+
+  
   header {
-    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: center;
     min-height: auto;
     padding: var(--spacing-sm);
-    gap: var(--spacing-sm);
+    gap: var(--spacing-md);
   }
 
   .logo-icon {
@@ -944,18 +981,16 @@ footer a {
   }
 
   .lang-switch-container {
-    width: 100%;
     justify-content: center;
   }
 
   .nav-links {
-    width: 100%;
     gap: var(--spacing-sm);
     justify-content: center;
   }
 
   .fav-container {
-    width: 100%;
+    width: fit-content;
   }
 
   .search-bar-container {
@@ -1005,10 +1040,8 @@ footer a {
     width: 90%;
   }
 
-  footer {
-    justify-content: space-between;
-    font-size: small;
-  }
+ 
+  
 }
 
 /* Mobile Devices (480px - 768px) */
@@ -1025,7 +1058,6 @@ footer a {
   }
 
   .nav-links {
-    width: 100%;
     gap: var(--spacing-md);
     justify-content: center;
   }
@@ -1055,7 +1087,7 @@ footer a {
 @media screen and (min-width: 768px) and (max-width: 1023px) {
   header {
     flex-wrap: wrap;
-    justify-content: space-around;
+    justify-content: center;
     align-items: center;
   }
 
