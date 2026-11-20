@@ -31,10 +31,13 @@ function extractCoordinates(shelter) {
   return null;
 }
 
-function transformShelterToFavorite(shelter) {
+function transformShelterToFavorite(rawInput) {
+  // Unwrap backend favorite records ({ id, createdAt, shelter: { ... } })
+  const shelter = rawInput?.shelter && typeof rawInput.shelter === 'object' ? rawInput.shelter : rawInput;
+
   const coords = extractCoordinates(shelter);
   if (!coords || Number.isNaN(coords.latitude) || Number.isNaN(coords.longitude)) {
-    console.error('[transformShelterToFavorite] Missing valid coordinates in shelter object:', shelter);
+    console.error('[transformShelterToFavorite] Missing valid coordinates in shelter object:', rawInput);
     return null;
   }
 
@@ -172,6 +175,14 @@ export async function syncLocalStorageFavorites(favorites, token) {
     console.warn('No favorites to sync');
     return null;
   }
+
+  // Keep only offline/guest favorites that haven't been saved to the backend yet
+  const unsyncedFavorites = favorites.filter((item) => !item.createdAt);
+
+  if (unsyncedFavorites.length === 0) {
+    return null;
+  }
+
   try {
     const headers = getAuthHeaders(token);
     const validBodies = favorites
