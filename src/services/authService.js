@@ -72,7 +72,9 @@ export function scheduleTokenRefresh(accessToken) {
   const delay = Math.max(0, expiresAtMs - REFRESH_BUFFER_MS - Date.now());
 
   refreshTimerId = setTimeout(() => {
-    refreshToken();
+    refreshToken().catch(() => {
+      logout();
+    });
   }, delay);
 }
 
@@ -90,7 +92,9 @@ export function initAuthTimer() {
     scheduleTokenRefresh(currentAccessToken);
   } else {
     // Access token cookie expired while tab was closed, but refresh token is still valid
-    refreshToken();
+    refreshToken().catch(() => {
+      logout();
+    });
   }
 }
 
@@ -130,10 +134,11 @@ export async function login(email, password) {
   saveAuthTokens(data.accessToken, data.refreshToken);
 
   localStorage.setItem('user_session', JSON.stringify({
+    createdAt: new Date().toISOString(),
+    email: data.user.email,
     id: data.user.id,
     name: data.user.name,
-    email: data.user.email,
-    loginTime: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
   }));
 
   return { token: data.accessToken, user: data.user };
@@ -165,13 +170,10 @@ export async function refreshToken() {
     try {
       const currentRefreshToken = getRefreshToken();
       if (!currentRefreshToken) {
-        console.log('[refreshToken] No refresh token available, logging out...');
-        logout();
-        return null;
+       throw new Error('No refresh token available');
       }
 
-    console.log('[refreshToken] Attempting to refresh token...');
-
+    
     const response = await fetch(`${API_URL}/auth/refresh`, {
       method: 'POST',
       headers: {
@@ -179,25 +181,18 @@ export async function refreshToken() {
         'Accept': 'application/json',
         'Authorization': `Bearer ${currentRefreshToken}`,
       },
-      // If your backend expects the refresh token in the body instead of the header, uncomment below:
-      // body: JSON.stringify({ refreshToken: currentRefreshToken }),
+      // Uncomment the line below if your backend reads req.body.refreshToken instead of the Authorization header:
+      body: JSON.stringify({ refreshToken: currentRefreshToken }),
     });
 
-    const data = await response.json();
+    const data = await response.json().catch(() => ({}));
 
     if (!response.ok) {
-      console.warn('[refreshToken] Refresh failed:', data.message);
-      logout();
-      return null;
+      throw new Error(data.message || `Refresh failed with status ${response.status}`);
     }
 
-    console.log('[refreshToken] Token refreshed successfully');
     saveAuthTokens(data.accessToken, data.refreshToken);
       return data.accessToken;
-    } catch (error) {
-      console.error('[refreshToken] Error:', error.message);
-      logout();
-      return null;
     } finally {
       refreshPromise = null;
     }
@@ -206,8 +201,21 @@ export async function refreshToken() {
   return refreshPromise;
 }
 
-export function logout() {
+let isLoggingOut = false;
+
+export function logout(redirect = true) {
+  if (isLoggingOut) return;
+  isLoggingOut = true;
+
   clearRefreshTimer();
   clearAuthCookie();
   localStorage.removeItem('user_session');
+
+  if (redirect && window.location.pathname !== '/login') {
+    window.location.href = '/login';
+  }
+
+setTimeout(() => {
+    isLoggingOut = false;
+  }, 500);
 }
