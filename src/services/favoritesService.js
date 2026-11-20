@@ -3,30 +3,79 @@ import { getJwtToken } from './authService';
 
 const API_URL = import.meta.env.VITE_API_URL || '';
 
+function extractCoordinates(shelter) {
+  // 1. Already transformed { location: { latitude, longitude } }
+  if (shelter.location?.latitude != null && shelter.location?.longitude != null) {
+    return {
+      latitude: Number(shelter.location.latitude),
+      longitude: Number(shelter.location.longitude),
+    };
+  }
+
+  // 2. Flat properties: lat/lon, lat/lng, or latitude/longitude
+  const lat = shelter.lat ?? shelter.latitude ?? shelter.center?.lat ?? shelter.position?.lat ?? shelter.coords?.lat ?? shelter.coords?.latitude;
+  const lon = shelter.lon ?? shelter.lng ?? shelter.longitude ?? shelter.center?.lon ?? shelter.center?.lng ?? shelter.position?.lng ?? shelter.position?.lon ?? shelter.coords?.lng ?? shelter.coords?.longitude;
+
+  if (lat != null && lon != null) {
+    return { latitude: Number(lat), longitude: Number(lon) };
+  }
+
+  // 3. GeoJSON geometry.coordinates: [longitude, latitude]
+  if (Array.isArray(shelter.geometry?.coordinates) && shelter.geometry.coordinates.length >= 2) {
+    return {
+      latitude: Number(shelter.geometry.coordinates[1]),
+      longitude: Number(shelter.geometry.coordinates[0]),
+    };
+  }
+
+  return null;
+}
+
 function transformShelterToFavorite(shelter) {
-  const lat = shelter.lat || (shelter.center && shelter.center.lat);
-  const lon = shelter.lon || (shelter.center && shelter.center.lon);
+  const coords = extractCoordinates(shelter);
+  if (!coords || Number.isNaN(coords.latitude) || Number.isNaN(coords.longitude)) {
+    console.error('[transformShelterToFavorite] Missing valid coordinates in shelter object:', shelter);
+    return null;
+  }
+
   const tags = shelter.tags || {};
 
   const body = {
     location: {
-      latitude: lat,
-      longitude: lon,
+      latitude: coords.latitude,
+      longitude: coords.longitude,
     },
+    name: tags.name || shelter.name || 'Unnamed Shelter',
   };
 
-  if (tags.name) body.name = tags.name;
-  if (tags['addr:housenumber'] || tags['addr:street'] || tags['addr:city']) {
-    body.address = [tags['addr:housenumber'], tags['addr:street'], tags['addr:city']]
+  const address =
+    shelter.address ||
+    [tags['addr:housenumber'], tags['addr:street'], tags['addr:city']]
       .filter(Boolean)
       .join(' ');
+  if (address) body.address = address;
+
+  const rawWebsite = tags.website || shelter.website;
+  if (rawWebsite) {
+    body.website = /^https?:\/\//i.test(rawWebsite)
+      ? rawWebsite
+      : `https://${rawWebsite}`;
   }
-  if (tags.website) body.website = tags.website;
-  if (tags.phone) body.phone = tags.phone;
-  if (tags.email) body.email = tags.email;
-  if (tags.opening_hours) body.hours = tags.opening_hours;
-  if (tags.google_maps_url) body.googleMapsUrl = tags.google_maps_url;
-  if (tags.apple_maps_url) body.appleMapsUrl = tags.apple_maps_url;
+
+  const phone = tags.phone || shelter.phone;
+  if (phone) body.phone = String(phone);
+
+  const email = tags.email || shelter.email;
+  if (email) body.email = email;
+
+  const hours = tags.opening_hours || shelter.hours;
+  if (hours) body.hours = hours;
+
+  const googleMapsUrl = tags.google_maps_url || shelter.googleMapsUrl;
+  if (googleMapsUrl) body.googleMapsUrl = googleMapsUrl;
+
+  const appleMapsUrl = tags.apple_maps_url || shelter.appleMapsUrl;
+  if (appleMapsUrl) body.appleMapsUrl = appleMapsUrl;
 
   return body;
 }
@@ -38,6 +87,11 @@ function getAuthHeaders(token) {
 }
 
 export async function saveFavorite(shelter, token) {
+  const body = transformShelterToFavorite(shelter);
+  if (!body) {
+    throw new Error('Failed to transform shelter to favorite. Missing coordinates or required fields.');
+  }
+
   try {
     const headers = getAuthHeaders(token);
 
@@ -49,8 +103,6 @@ export async function saveFavorite(shelter, token) {
       hasEmail: !!shelter.tags?.email,
       hasAddress: !!shelter.tags?.['addr:street'],
     });
-
-    const body = transformShelterToFavorite(shelter);
 
     console.log('[saveFavorite] Transformed body (what gets sent to backend):', JSON.stringify(body, null, 2));
 
@@ -115,16 +167,33 @@ export async function fetchUserFavorites(token) {
 }
 
 export async function syncLocalStorageFavorites(favorites, token) {
+  if (!Array.isArray(favorites) || favorites.length === 0) {
+    console.warn('No favorites to sync');
+    return null;
+  }
   try {
     const headers = getAuthHeaders(token);
-    const transformedFavorites = favorites.map(transformShelterToFavorite);
-    const response = await axios.post(`${API_URL}/favorites`, { favorites: transformedFavorites }, { headers });
-    return response.data;
+    const validBodies = favorites
+      .map(transformShelterToFavorite)
+      .filter(Boolean);
+
+    if (validBodies.length === 0) {
+      return null;
+    }
+    const requests = validBodies.map((body) =>
+      axios.post(`${API_URL}/favorites`, body, { headers })
+    );
+    const responses = await Promise.all(requests);
+    return responses.map((res) => res.data);
   } catch (error) {
     if (error.response?.status === 401) {
       console.warn('Favorites sync not authorized');
     } else {
-      console.warn('Favorites sync not available:', error.response?.status);
+     console.warn(
+        'Favorites sync failed:',
+        error.response?.status,
+        error.response?.data || error.message
+      );
     }
     return null;
   }
