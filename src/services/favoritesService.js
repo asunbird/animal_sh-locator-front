@@ -118,7 +118,7 @@ export async function syncLocalStorageFavorites(favorites, token) {
   try {
     const headers = getAuthHeaders(token);
     const transformedFavorites = favorites.map(transformShelterToFavorite);
-    const response = await axios.post(`${API_URL}/favorites/sync`, { favorites: transformedFavorites }, { headers });
+    const response = await axios.post(`${API_URL}/favorites`, { favorites: transformedFavorites }, { headers });
     return response.data;
   } catch (error) {
     if (error.response?.status === 401) {
