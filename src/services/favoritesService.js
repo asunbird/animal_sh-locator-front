@@ -15,7 +15,7 @@ function transformShelterToFavorite(shelter) {
     },
   };
 
-  if (tags.name) body.name = tags.name;
+  if (tags.name) body.name = tags.name || 'Unnamed Shelter';
   if (tags['addr:housenumber'] || tags['addr:street'] || tags['addr:city']) {
     body.address = [tags['addr:housenumber'], tags['addr:street'], tags['addr:city']]
       .filter(Boolean)
@@ -114,18 +114,35 @@ export async function fetchUserFavorites(token) {
   }
 }
 
+
 export async function syncLocalStorageFavorites(favorites, token) {
+  if (!Array.isArray(favorites) || favorites.length === 0) {
+    return null;
+  }
+
   try {
     const headers = getAuthHeaders(token);
-    const transformedFavorites = favorites.map(transformShelterToFavorite);
-    const response = await axios.post(`${API_URL}/favorites`, { favorites: transformedFavorites }, { headers });
-    return response.data;
+
+    const requests = favorites.map((shelter) => {
+      // Handle both raw map card objects and already-transformed objects
+      const body = shelter.location ? shelter : transformShelterToFavorite(shelter);
+      return axios.post(`${API_URL}/favorites`, body, { headers });
+    });
+
+    const responses = await Promise.all(requests);
+    return responses.map((res) => res.data);
   } catch (error) {
     if (error.response?.status === 401) {
       console.warn('Favorites sync not authorized');
     } else {
-      console.warn('Favorites sync not available:', error.response?.status);
+      console.warn(
+        'Favorites sync failed:',
+        error.response?.status,
+        error.response?.data || error.message
+      );
     }
     return null;
   }
 }
+
+
