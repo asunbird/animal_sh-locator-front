@@ -1,4 +1,6 @@
-import { useState, useEffect, useCallback } from 'react'; // <-- Added useCallback
+import { useState, useEffect, useCallback, useContext } from 'react'; // <-- Added useCallback
+import { AuthContext } from './authContext';
+
 import { Link } from "react-router-dom";
 import logoIcon from '/src/assets/Logo-PetMap.svg'; // Import icons
 import { useTranslation } from 'react-i18next'; // Import useTranslation
@@ -27,6 +29,8 @@ const customPawIcon = new L.Icon({
 function Map() {
     // Initialize translation hook
     const { t } = useTranslation();
+    // Access authentication state from AuthContext
+    const { isAuthenticated } = useContext(AuthContext);
 
     // 1. All state variables
     const [searchQuery, setSearchQuery] = useState('');
@@ -255,6 +259,12 @@ function Map() {
                             </p>
                         </Link>
                     </div> 
+                    {/* Add Sign In link here */}
+                    {!isAuthenticated && (
+                        <Link className="nav-sections" to="/components/signin">
+                            {t('signIn')}
+                        </Link>
+                    )}
                 </div>
                 
                 <div className="map-search-container">

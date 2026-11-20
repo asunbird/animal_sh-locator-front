@@ -1,3 +1,6 @@
+import { useContext } from 'react';
+import { AuthContext } from './authContext';
+
 import { Link } from "react-router-dom";
 import { useSaveFavorites } from './hooks/useSaveFavorites'; // Import hook
 import logoIcon from '/src/assets/Logo-PetMap.svg'; // Import icons
@@ -7,6 +10,9 @@ import { useTranslation } from 'react-i18next'; // Import useTranslation
 function FavoritesList() {
     // Initialize translation hook
     const { t } = useTranslation();
+
+    // Access authentication state from AuthContext
+    const { isAuthenticated } = useContext(AuthContext);
 
     // Grab the favorites array and the toggle function from your hook
     const { favorites, toggleFavorite } = useSaveFavorites();
@@ -22,6 +28,9 @@ function FavoritesList() {
 
                <nav className="nav-links jost-700"> 
                     <Link className="nav-sections" to="/map">{t('backToMap')}</Link>
+                    {!isAuthenticated && (
+                        <Link className="nav-sections" to="/components/signin">{t('signIn')}</Link>
+                )}
                 </nav>
             </header>
             <h2 className="jost-700">{t('favoritesList')}</h2>

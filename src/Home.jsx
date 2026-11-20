@@ -1,4 +1,7 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
+import { AuthContext } from './authContext';
+import { logout } from './services/authService';
+
 import { Link, useNavigate, Outlet } from "react-router-dom";
 import { useTranslation } from 'react-i18next'; // 1. Import useTranslation
 import { changeLanguageAndSave } from './i18n'; // Import language change helper
@@ -6,13 +9,14 @@ import logoIcon from '/src/assets/Logo-PetMap.svg'; // Import icons
 
 import gitHub from '/src/assets/GitHub.png'; // Import icons
 import { useSaveFavorites } from './hooks/useSaveFavorites';
-import { useAuth } from './hooks/useAuth';
 import LevelBadge from './LevelBadge.jsx';
 import './LevelBadge.css';
 
 
 // Home component with header, main content, and footer
 function Home() {
+    // Access authentication state and setter from AuthContext
+    const { isAuthenticated, setIsAuthenticated } = useContext(AuthContext);
 
     // Initialize translation hook
     const { t, i18n } = useTranslation();
@@ -27,11 +31,10 @@ function Home() {
     // Grab favorites from the custom hook
     const { favorites } = useSaveFavorites();
 
-    const { token, setToken } = useAuth();
-
 
     const handleSignOut = () => {
-        setToken(null);
+        logout();
+        setIsAuthenticated(false);
         navigate('/');
     };
 
@@ -109,7 +112,7 @@ function Home() {
                 </div>
 
                 <nav className="nav-links jost-700">
-                    {token ? (
+                    {isAuthenticated ? (
                         <span className="flex-row " >
                         <button id="signout" className="nav-link-btn jost-700" onClick={handleSignOut}>
                             {t('signOut')}

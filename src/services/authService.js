@@ -6,7 +6,9 @@ function getCookie(name) {
 }
 
 function setJwtCookie(token) {
-  document.cookie = `jwt_token=${encodeURIComponent(token)}; path=/; max-age=86400; SameSite=Strict`;
+  const isHttps = window.location.protocol === 'https:';
+  const secureFlag = isHttps ? '; Secure' : '';
+  document.cookie = `jwt_token=${encodeURIComponent(token)}; path=/; max-age=86400; SameSite=Strict${secureFlag}`;
 }
 
 function clearJwtCookie() {
