@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { AuthContext } from './authContext';
+import { AuthContext } from './provider/authContext';
 
 import { Link } from "react-router-dom";
 import { useSaveFavorites } from './hooks/useSaveFavorites'; // Import hook

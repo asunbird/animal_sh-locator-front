@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useContext } from 'react'; // <-- Added useCallback
-import { AuthContext } from './authContext';
+import { AuthContext } from './provider/authContext';
 
 import { Link } from "react-router-dom";
 import logoIcon from '/src/assets/Logo-PetMap.svg'; // Import icons

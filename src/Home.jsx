@@ -1,5 +1,5 @@
 import { useState, useContext } from 'react';
-import { AuthContext } from './authContext';
+import { AuthContext } from './provider/authContext';
 import { logout } from './services/authService';
 
 import { Link, useNavigate, Outlet } from "react-router-dom";
@@ -16,7 +16,7 @@ import './LevelBadge.css';
 // Home component with header, main content, and footer
 function Home() {
     // Access authentication state and setter from AuthContext
-    const { isAuthenticated, setIsAuthenticated } = useContext(AuthContext);
+    const { isAuthenticated, setToken } = useContext(AuthContext);
 
     // Initialize translation hook
     const { t, i18n } = useTranslation();
@@ -33,8 +33,8 @@ function Home() {
 
 
     const handleSignOut = () => {
-        logout();
-        setIsAuthenticated(false);
+        logout(false);
+        setToken(null);
         navigate('/');
     };
 

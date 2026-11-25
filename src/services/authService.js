@@ -1,36 +1,24 @@
 const API_URL = import.meta.env.VITE_API_URL || '';
+const AUTH_LIFETIME_MS = 15 * 60 * 1000;
+const AUTH_EXPIRY_KEY = 'auth_expires_at';
 
-const REFRESH_BUFFER_MS = 60 * 1000; // Refresh 1 minute before actual JWT expiration
-
-let refreshTimerId = null;
-let refreshPromise = null;
+let authTimerId = null;
 
 function getCookie(name) {
-  const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+  const match = document.cookie.match(new RegExp(`(^| )${name}=([^;]+)`));
   return match ? decodeURIComponent(match[2]) : null;
 }
 
 function setCookie(name, value, maxAgeSeconds) {
-  const isHttps = window.location.protocol === 'https:';
-  const secureFlag = isHttps ? '; Secure' : '';
+  const secureFlag = window.location.protocol === 'https:' ? '; Secure' : '';
   document.cookie = `${name}=${encodeURIComponent(value)}; path=/; max-age=${maxAgeSeconds}; SameSite=Strict${secureFlag}`;
 }
 
-function clearAuthCookie() {
+function clearAuthCookies() {
   document.cookie = 'jwt_token=; path=/; max-age=0; SameSite=Strict';
   document.cookie = 'refresh_token=; path=/; max-age=0; SameSite=Strict';
 }
 
-function clearRefreshTimer() {
-  if (refreshTimerId) {
-    clearTimeout(refreshTimerId);
-    refreshTimerId = null;
-  }
-}
-
-/**
- * Decodes the payload of a JWT without external libraries to read `exp` and `iat`.
- */
 function parseJwt(token) {
   try {
     const base64Url = token.split('.')[1];
@@ -38,7 +26,7 @@ function parseJwt(token) {
     const jsonPayload = decodeURIComponent(
       atob(base64)
         .split('')
-        .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+        .map((character) => `%${(`00${character.charCodeAt(0).toString(16)}`).slice(-2)}`)
         .join('')
     );
     return JSON.parse(jsonPayload);
@@ -47,75 +35,76 @@ function parseJwt(token) {
   }
 }
 
-/**
- * Calculates remaining lifetime in seconds from a JWT's `exp` claim.
- */
-function getTokenMaxAgeSeconds(token, fallbackSeconds) {
-  const payload = parseJwt(token);
-  if (payload?.exp) {
-    const remaining = Math.floor(payload.exp - Date.now() / 1000);
-    return Math.max(0, remaining);
+function clearAuthTimer() {
+  if (authTimerId !== null) {
+    clearTimeout(authTimerId);
+    authTimerId = null;
   }
-  return fallbackSeconds;
 }
 
-/**
- * Schedules the refresh based on the accessToken's actual `exp` timestamp.
- */
-export function scheduleTokenRefresh(accessToken) {
-  clearRefreshTimer();
-
-  const payload = parseJwt(accessToken);
-  if (!payload?.exp) return;
-
-  const expiresAtMs = payload.exp * 1000;
-  const delay = Math.max(0, expiresAtMs - REFRESH_BUFFER_MS - Date.now());
-
-  refreshTimerId = setTimeout(() => {
-    refreshToken().catch(() => {
-      logout();
-    });
-  }, delay);
+function scheduleAuthExpiration(expiresAt) {
+  clearAuthTimer();
+  authTimerId = setTimeout(() => logout(), Math.max(0, expiresAt - Date.now()));
 }
 
-/**
- * Call this once on app startup (e.g., in main.jsx or App.jsx) to restore
- * the refresh schedule after a page reload.
- */
-export function initAuthTimer() {
-  const currentAccessToken = getJwtToken();
-  const currentRefreshToken = getRefreshToken();
-
-  if (!currentRefreshToken) return;
-
-  if (currentAccessToken) {
-    scheduleTokenRefresh(currentAccessToken);
-  } else {
-    // Access token cookie expired while tab was closed, but refresh token is still valid
-    refreshToken().catch(() => {
-      logout();
-    });
+function saveAuthToken(accessToken) {
+  if (!accessToken) {
+    throw new Error('Login response did not include an access token');
   }
+
+  const now = Date.now();
+  const tokenExp = parseJwt(accessToken)?.exp;
+  const tokenExpiresAt = Number.isFinite(tokenExp) ? tokenExp * 1000 : Infinity;
+  const expiresAt = Math.min(now + AUTH_LIFETIME_MS, tokenExpiresAt);
+
+  if (expiresAt <= now) {
+    throw new Error('Login returned an expired access token');
+  }
+
+  const maxAgeSeconds = Math.ceil((expiresAt - now) / 1000);
+  setCookie('jwt_token', accessToken, maxAgeSeconds);
+  document.cookie = 'refresh_token=; path=/; max-age=0; SameSite=Strict';
+  localStorage.setItem(AUTH_EXPIRY_KEY, String(expiresAt));
+  scheduleAuthExpiration(expiresAt);
 }
 
 export function getJwtToken() {
-  return getCookie('jwt_token');
-}
+  const token = getCookie('jwt_token');
+  const expiresAt = Number(localStorage.getItem(AUTH_EXPIRY_KEY));
 
-export function getRefreshToken() {
-  return getCookie('refresh_token');
-}
-
-function saveAuthTokens(accessToken, newRefreshToken) {
-  const accessMaxAge = getTokenMaxAgeSeconds(accessToken, 7200);
-  setCookie('jwt_token', accessToken, accessMaxAge);
-
-  if (newRefreshToken) {
-    const refreshMaxAge = getTokenMaxAgeSeconds(newRefreshToken, 86400);
-    setCookie('refresh_token', newRefreshToken, refreshMaxAge);
+  if (token && Number.isFinite(expiresAt) && expiresAt > 0 && Date.now() >= expiresAt) {
+    logout(false);
+    return null;
   }
 
-  scheduleTokenRefresh(accessToken);
+  return token;
+}
+
+export function initAuthTimer() {
+  const accessToken = getCookie('jwt_token');
+  if (!accessToken) {
+    logout(false);
+    return null;
+  }
+
+  const now = Date.now();
+  const storedExpiry = Number(localStorage.getItem(AUTH_EXPIRY_KEY));
+  const tokenExp = parseJwt(accessToken)?.exp;
+  const tokenExpiresAt = Number.isFinite(tokenExp) ? tokenExp * 1000 : Infinity;
+  const sessionExpiresAt = Number.isFinite(storedExpiry) && storedExpiry > 0
+    ? storedExpiry
+    : now + AUTH_LIFETIME_MS;
+  const expiresAt = Math.min(sessionExpiresAt, tokenExpiresAt);
+
+  if (expiresAt <= now) {
+    logout(false);
+    return null;
+  }
+
+  localStorage.setItem(AUTH_EXPIRY_KEY, String(expiresAt));
+  setCookie('jwt_token', accessToken, Math.ceil((expiresAt - now) / 1000));
+  scheduleAuthExpiration(expiresAt);
+  return accessToken;
 }
 
 export async function login(email, password) {
@@ -123,7 +112,7 @@ export async function login(email, password) {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Accept': 'application/json',
+      Accept: 'application/json',
     },
     body: JSON.stringify({ email, password }),
   });
@@ -131,7 +120,7 @@ export async function login(email, password) {
   const data = await response.json();
   if (!response.ok) throw new Error(data.message || 'Authentication failed');
 
-  saveAuthTokens(data.accessToken, data.refreshToken);
+  saveAuthToken(data.accessToken);
 
   localStorage.setItem('user_session', JSON.stringify({
     createdAt: new Date().toISOString(),
@@ -149,7 +138,7 @@ export async function register(name, email, password) {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Accept': 'application/json',
+      Accept: 'application/json',
     },
     body: JSON.stringify({ name, email, password }),
   });
@@ -160,62 +149,13 @@ export async function register(name, email, password) {
   return data;
 }
 
-export async function refreshToken() {
-  // Deduplicate concurrent refresh calls
-  if (refreshPromise) {
-    return refreshPromise;
-  }
-
-  refreshPromise = (async () => {
-    try {
-      const currentRefreshToken = getRefreshToken();
-      if (!currentRefreshToken) {
-       throw new Error('No refresh token available');
-      }
-
-    
-    const response = await fetch(`${API_URL}/auth/refresh`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${currentRefreshToken}`,
-      },
-      // Uncomment the line below if your backend reads req.body.refreshToken instead of the Authorization header:
-      body: JSON.stringify({ refreshToken: currentRefreshToken }),
-    });
-
-    const data = await response.json().catch(() => ({}));
-
-    if (!response.ok) {
-      throw new Error(data.message || `Refresh failed with status ${response.status}`);
-    }
-
-    saveAuthTokens(data.accessToken, data.refreshToken);
-      return data.accessToken;
-    } finally {
-      refreshPromise = null;
-    }
-  })();
-
-  return refreshPromise;
-}
-
-let isLoggingOut = false;
-
 export function logout(redirect = true) {
-  if (isLoggingOut) return;
-  isLoggingOut = true;
-
-  clearRefreshTimer();
-  clearAuthCookie();
+  clearAuthTimer();
+  clearAuthCookies();
+  localStorage.removeItem(AUTH_EXPIRY_KEY);
   localStorage.removeItem('user_session');
 
-  if (redirect && window.location.pathname !== '/login') {
-    window.location.href = '/login';
+  if (redirect && window.location.pathname !== '/components/signin') {
+    window.location.href = '/components/signin';
   }
-
-setTimeout(() => {
-    isLoggingOut = false;
-  }, 500);
 }
