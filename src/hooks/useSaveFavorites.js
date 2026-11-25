@@ -15,7 +15,7 @@ export const useSaveFavorites = () => {
       if (token) {
         try {
           setIsLoading(true);
-          const data = await fetchUserFavorites(token);
+          const data = await fetchUserFavorites();
           console.log('[useSaveFavorites] Received from backend:', data);
 
           const favArray = data.items || data.favorites || [];
@@ -60,10 +60,10 @@ export const useSaveFavorites = () => {
         const isFav = favorites.some((f) => (f.id || f._id) === shelterId);
         if (isFav) {
           console.log('[toggleFavorite] Calling removeFavorite with ID:', shelterId);
-          await removeFavorite(shelterId, token);
+          await removeFavorite(shelterId);
         } else {
           console.log('[toggleFavorite] Calling saveFavorite');
-          await saveFavorite(shelter, token);
+          await saveFavorite(shelter);
         }
       } catch (error) {
         console.error('Failed to sync favorite with backend:', error);

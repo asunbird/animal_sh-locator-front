@@ -1,20 +1,112 @@
 const API_URL = import.meta.env.VITE_API_URL || '';
+const AUTH_LIFETIME_MS = 15 * 60 * 1000;
+const AUTH_EXPIRY_KEY = 'auth_expires_at';
+
+let authTimerId = null;
 
 function getCookie(name) {
-  const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+  const match = document.cookie.match(new RegExp(`(^| )${name}=([^;]+)`));
   return match ? decodeURIComponent(match[2]) : null;
 }
 
-function setJwtCookie(token) {
-  document.cookie = `jwt_token=${encodeURIComponent(token)}; path=/; max-age=86400; SameSite=Strict`;
+function setCookie(name, value, maxAgeSeconds) {
+  const secureFlag = window.location.protocol === 'https:' ? '; Secure' : '';
+  document.cookie = `${name}=${encodeURIComponent(value)}; path=/; max-age=${maxAgeSeconds}; SameSite=Strict${secureFlag}`;
 }
 
-function clearJwtCookie() {
+function clearAuthCookies() {
   document.cookie = 'jwt_token=; path=/; max-age=0; SameSite=Strict';
+  document.cookie = 'refresh_token=; path=/; max-age=0; SameSite=Strict';
+}
+
+function getTokenExpiry(token) {
+  try {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const payload = JSON.parse(
+      decodeURIComponent(
+        atob(base64)
+          .split('')
+          .map((character) => `%${(`00${character.charCodeAt(0).toString(16)}`).slice(-2)}`)
+          .join('')
+      )
+    );
+    return Number.isFinite(payload.exp) ? payload.exp * 1000 : null;
+  } catch {
+    return null;
+  }
+}
+
+function clearAuthTimer() {
+  if (authTimerId !== null) {
+    clearTimeout(authTimerId);
+    authTimerId = null;
+  }
+}
+
+function scheduleAuthExpiration(expiresAt) {
+  clearAuthTimer();
+  authTimerId = setTimeout(() => logout(), Math.max(0, expiresAt - Date.now()));
+}
+
+function saveAuthToken(token) {
+  if (!token) {
+    throw new Error('Login response did not include an access token');
+  }
+
+  const now = Date.now();
+  const tokenExpiresAt = getTokenExpiry(token) ?? Infinity;
+  const expiresAt = Math.min(now + AUTH_LIFETIME_MS, tokenExpiresAt);
+  if (expiresAt <= now) {
+    throw new Error('Login returned an expired access token');
+  }
+
+  setCookie('jwt_token', token, Math.ceil((expiresAt - now) / 1000));
+  localStorage.setItem(AUTH_EXPIRY_KEY, String(expiresAt));
+  scheduleAuthExpiration(expiresAt);
 }
 
 export function getJwtToken() {
-  return getCookie('jwt_token');
+  const token = getCookie('jwt_token');
+  const storedExpiry = localStorage.getItem(AUTH_EXPIRY_KEY);
+  const expiresAt = Number(storedExpiry);
+  const tokenExpiresAt = token ? getTokenExpiry(token) : null;
+  const isExpired = storedExpiry !== null
+    ? !Number.isFinite(expiresAt) || expiresAt <= 0 || Date.now() >= expiresAt
+    : tokenExpiresAt !== null && Date.now() >= tokenExpiresAt;
+
+  if (isExpired || (!token && storedExpiry !== null)) {
+    logout();
+    return null;
+  }
+
+  return token;
+}
+
+export function initAuthTimer() {
+  const token = getCookie('jwt_token');
+  if (!token) {
+    logout(false);
+    return null;
+  }
+
+  const now = Date.now();
+  const storedExpiry = Number(localStorage.getItem(AUTH_EXPIRY_KEY));
+  const tokenExpiresAt = getTokenExpiry(token) ?? Infinity;
+  const sessionExpiresAt = Number.isFinite(storedExpiry) && storedExpiry > 0
+    ? storedExpiry
+    : now + AUTH_LIFETIME_MS;
+  const expiresAt = Math.min(sessionExpiresAt, tokenExpiresAt);
+
+  if (expiresAt <= now) {
+    logout(false);
+    return null;
+  }
+
+  localStorage.setItem(AUTH_EXPIRY_KEY, String(expiresAt));
+  setCookie('jwt_token', token, Math.ceil((expiresAt - now) / 1000));
+  scheduleAuthExpiration(expiresAt);
+  return token;
 }
 
 export async function login(email, password) {
@@ -22,7 +114,7 @@ export async function login(email, password) {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Accept': 'application/json',
+      Accept: 'application/json',
     },
     body: JSON.stringify({ email, password }),
   });
@@ -30,7 +122,7 @@ export async function login(email, password) {
   const data = await response.json();
   if (!response.ok) throw new Error(data.message || 'Authentication failed');
 
-  setJwtCookie(data.accessToken);
+  saveAuthToken(data.accessToken);
 
   localStorage.setItem('user_session', JSON.stringify({
     id: data.user.id,
@@ -47,7 +139,7 @@ export async function register(name, email, password) {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Accept': 'application/json',
+      Accept: 'application/json',
     },
     body: JSON.stringify({ name, email, password }),
   });
@@ -58,46 +150,13 @@ export async function register(name, email, password) {
   return data;
 }
 
-export async function refreshToken() {
-  try {
-    const currentToken = getJwtToken();
-    if (!currentToken) {
-      console.log('[refreshToken] No token to refresh');
-      return null;
-    }
-
-    console.log('[refreshToken] Attempting to refresh token...');
-
-    const response = await fetch(`${API_URL}/auth/refresh`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${currentToken}`,
-      },
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      console.warn('[refreshToken] Refresh failed:', data.message);
-      clearJwtCookie();
-      localStorage.removeItem('user_session');
-      return null;
-    }
-
-    console.log('[refreshToken] Token refreshed successfully');
-    setJwtCookie(data.accessToken);
-    return data.accessToken;
-  } catch (error) {
-    console.error('[refreshToken] Error:', error.message);
-    clearJwtCookie();
-    localStorage.removeItem('user_session');
-    return null;
-  }
-}
-
-export function logout() {
-  clearJwtCookie();
+export function logout(redirect = true) {
+  clearAuthTimer();
+  clearAuthCookies();
+  localStorage.removeItem(AUTH_EXPIRY_KEY);
   localStorage.removeItem('user_session');
+
+  if (redirect && window.location.pathname !== '/components/signin') {
+    window.location.href = '/components/signin';
+  }
 }

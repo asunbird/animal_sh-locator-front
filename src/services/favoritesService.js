@@ -80,20 +80,20 @@ function transformShelterToFavorite(shelter) {
   return body;
 }
 
-function getAuthHeaders(token) {
-  const finalToken = token || getJwtToken();
-  const headers = finalToken ? { Authorization: `Bearer ${finalToken}` } : {};
-  return headers;
+function getAuthHeaders() {
+  const token = getJwtToken();
+  return token ? { Authorization: `Bearer ${token}` } : null;
 }
 
-export async function saveFavorite(shelter, token) {
+export async function saveFavorite(shelter) {
   const body = transformShelterToFavorite(shelter);
   if (!body) {
     throw new Error('Failed to transform shelter to favorite. Missing coordinates or required fields.');
   }
 
   try {
-    const headers = getAuthHeaders(token);
+    const headers = getAuthHeaders();
+    if (!headers) return null;
 
     console.log('[saveFavorite] Original shelter from map card:', {
       id: shelter.id,
@@ -132,9 +132,10 @@ export async function saveFavorite(shelter, token) {
   }
 }
 
-export async function removeFavorite(shelterId, token) {
+export async function removeFavorite(shelterId) {
   try {
-    const headers = getAuthHeaders(token);
+    const headers = getAuthHeaders();
+    if (!headers) return null;
     const response = await axios.delete(`${API_URL}/favorites/${shelterId}`, { headers });
     return response.data;
   } catch (error) {
@@ -146,9 +147,12 @@ export async function removeFavorite(shelterId, token) {
   }
 }
 
-export async function fetchUserFavorites(token) {
+export async function fetchUserFavorites() {
   try {
-    const headers = getAuthHeaders(token);
+    const headers = getAuthHeaders();
+    if (!headers) {
+      return { favorites: JSON.parse(localStorage.getItem('paws_favorites') || '[]') };
+    }
     const response = await axios.get(`${API_URL}/favorites`, { headers });
 
     console.log('[fetchUserFavorites] Response from backend:', {
@@ -166,13 +170,14 @@ export async function fetchUserFavorites(token) {
   }
 }
 
-export async function syncLocalStorageFavorites(favorites, token) {
+export async function syncLocalStorageFavorites(favorites) {
   if (!Array.isArray(favorites) || favorites.length === 0) {
     console.warn('No favorites to sync');
     return null;
   }
   try {
-    const headers = getAuthHeaders(token);
+    const headers = getAuthHeaders();
+    if (!headers) return null;
     const validBodies = favorites
       .map(transformShelterToFavorite)
       .filter(Boolean);

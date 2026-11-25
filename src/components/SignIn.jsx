@@ -30,7 +30,7 @@ const SignIn = () => {
             if (localFavorites) {
                 try {
                     const favorites = JSON.parse(localFavorites);
-                    await syncLocalStorageFavorites(favorites, result.token);
+                    await syncLocalStorageFavorites(favorites);
                     localStorage.removeItem('paws_favorites');
                 } catch (syncError) {
                     console.error('Failed to sync favorites:', syncError);
