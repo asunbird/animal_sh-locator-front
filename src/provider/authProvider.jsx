@@ -1,20 +1,23 @@
-import axios from "axios";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { AuthContext } from "./authContext";
-import { getJwtToken, initAuthTimer, logout } from "../services/authService";
+import axios from 'axios';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { AuthContext } from './authContext';
+import { getJwtToken, initAuthTimer, logout } from '../services/authService';
 
 const AuthProvider = ({ children }) => {
   const [token, setToken_] = useState(initAuthTimer);
 
   const setToken = useCallback((newToken) => {
+    if (!newToken) {
+      logout(false);
+    }
     setToken_(newToken);
   }, []);
 
   useEffect(() => {
     if (token) {
-      axios.defaults.headers.common["Authorization"] = "Bearer " + token;
+      axios.defaults.headers.common.Authorization = `Bearer ${token}`;
     } else {
-      delete axios.defaults.headers.common["Authorization"];
+      delete axios.defaults.headers.common.Authorization;
     }
   }, [token]);
 
@@ -40,7 +43,7 @@ const AuthProvider = ({ children }) => {
   }, []);
 
   const contextValue = useMemo(
-    () => ({ token, setToken, isAuthenticated: Boolean(token) }),
+    () => ({ token, setToken }),
     [token, setToken]
   );
 

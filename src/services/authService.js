@@ -19,17 +19,19 @@ function clearAuthCookies() {
   document.cookie = 'refresh_token=; path=/; max-age=0; SameSite=Strict';
 }
 
-function parseJwt(token) {
+function getTokenExpiry(token) {
   try {
     const base64Url = token.split('.')[1];
     const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    const jsonPayload = decodeURIComponent(
-      atob(base64)
-        .split('')
-        .map((character) => `%${(`00${character.charCodeAt(0).toString(16)}`).slice(-2)}`)
-        .join('')
+    const payload = JSON.parse(
+      decodeURIComponent(
+        atob(base64)
+          .split('')
+          .map((character) => `%${(`00${character.charCodeAt(0).toString(16)}`).slice(-2)}`)
+          .join('')
+      )
     );
-    return JSON.parse(jsonPayload);
+    return Number.isFinite(payload.exp) ? payload.exp * 1000 : null;
   } catch {
     return null;
   }
@@ -47,22 +49,19 @@ function scheduleAuthExpiration(expiresAt) {
   authTimerId = setTimeout(() => logout(), Math.max(0, expiresAt - Date.now()));
 }
 
-function saveAuthToken(accessToken) {
-  if (!accessToken) {
+function saveAuthToken(token) {
+  if (!token) {
     throw new Error('Login response did not include an access token');
   }
 
   const now = Date.now();
-  const tokenExp = parseJwt(accessToken)?.exp;
-  const tokenExpiresAt = Number.isFinite(tokenExp) ? tokenExp * 1000 : Infinity;
+  const tokenExpiresAt = getTokenExpiry(token) ?? Infinity;
   const expiresAt = Math.min(now + AUTH_LIFETIME_MS, tokenExpiresAt);
-
   if (expiresAt <= now) {
     throw new Error('Login returned an expired access token');
   }
 
-  const maxAgeSeconds = Math.ceil((expiresAt - now) / 1000);
-  setCookie('jwt_token', accessToken, maxAgeSeconds);
+  setCookie('jwt_token', token, Math.ceil((expiresAt - now) / 1000));
   document.cookie = 'refresh_token=; path=/; max-age=0; SameSite=Strict';
   localStorage.setItem(AUTH_EXPIRY_KEY, String(expiresAt));
   scheduleAuthExpiration(expiresAt);
@@ -70,10 +69,15 @@ function saveAuthToken(accessToken) {
 
 export function getJwtToken() {
   const token = getCookie('jwt_token');
-  const expiresAt = Number(localStorage.getItem(AUTH_EXPIRY_KEY));
+  const storedExpiry = localStorage.getItem(AUTH_EXPIRY_KEY);
+  const expiresAt = Number(storedExpiry);
+  const tokenExpiresAt = token ? getTokenExpiry(token) : null;
+  const isExpired = storedExpiry !== null
+    ? !Number.isFinite(expiresAt) || expiresAt <= 0 || Date.now() >= expiresAt
+    : tokenExpiresAt !== null && Date.now() >= tokenExpiresAt;
 
-  if (token && Number.isFinite(expiresAt) && expiresAt > 0 && Date.now() >= expiresAt) {
-    logout(false);
+  if (isExpired || (!token && storedExpiry !== null)) {
+    logout();
     return null;
   }
 
@@ -81,16 +85,15 @@ export function getJwtToken() {
 }
 
 export function initAuthTimer() {
-  const accessToken = getCookie('jwt_token');
-  if (!accessToken) {
+  const token = getCookie('jwt_token');
+  if (!token) {
     logout(false);
     return null;
   }
 
   const now = Date.now();
   const storedExpiry = Number(localStorage.getItem(AUTH_EXPIRY_KEY));
-  const tokenExp = parseJwt(accessToken)?.exp;
-  const tokenExpiresAt = Number.isFinite(tokenExp) ? tokenExp * 1000 : Infinity;
+  const tokenExpiresAt = getTokenExpiry(token) ?? Infinity;
   const sessionExpiresAt = Number.isFinite(storedExpiry) && storedExpiry > 0
     ? storedExpiry
     : now + AUTH_LIFETIME_MS;
@@ -102,9 +105,9 @@ export function initAuthTimer() {
   }
 
   localStorage.setItem(AUTH_EXPIRY_KEY, String(expiresAt));
-  setCookie('jwt_token', accessToken, Math.ceil((expiresAt - now) / 1000));
+  setCookie('jwt_token', token, Math.ceil((expiresAt - now) / 1000));
   scheduleAuthExpiration(expiresAt);
-  return accessToken;
+  return token;
 }
 
 export async function login(email, password) {
